@@ -16,5 +16,5 @@ collections:
   writeups:
     output: true
     permalink: /writeups/:name/
-    TryhackMe:  
+    tryhackme:  
       permalink: /writeups/tryhackme/:name/
