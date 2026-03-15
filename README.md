@@ -1,1 +1,0 @@
-# LumiryX.github.io
