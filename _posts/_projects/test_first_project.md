@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Test
+title: test_first_project
 ---
 
 Crack the World! 
