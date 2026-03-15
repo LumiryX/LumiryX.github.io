@@ -1,0 +1,15 @@
+title: Lumiryx Portfolio
+description: Developer Portfolio
+baseurl: ""
+url: "https://lumiryx.github.io"
+
+markdown: kramdown
+permalink: pretty
+
+collections:
+  projects:
+    output: true
+  tools:
+    output: true
+  writeups:
+    output: true

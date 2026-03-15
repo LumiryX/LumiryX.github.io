@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  display: flex;
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #eee;
+}
+
+aside {
+  width: 240px;
+  background: #1e1e1e;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+}
+
+main {
+  margin-left: 260px;
+  padding: 40px;
+  max-width: 900px;
+}
+
+a {
+  color: #61dafb;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
