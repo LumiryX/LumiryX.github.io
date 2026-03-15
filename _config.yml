@@ -9,7 +9,10 @@ permalink: pretty
 collections:
   projects:
     output: true
+    permalink: /projects/:name/
   tools:
     output: true
+    permalink: /tools/:name/
   writeups:
     output: true
+    permailink: /writeups/:name/
