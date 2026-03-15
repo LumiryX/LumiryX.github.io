@@ -135,8 +135,8 @@ color:var(--text);
 footer{
 text-align:center;
 padding:25px;
-border-top:1px solid var(--border);
 margin-top:40px;
+border-top:1px solid var(--border);
 }
 
 /* ---------- RESPONSIVE ---------- */
