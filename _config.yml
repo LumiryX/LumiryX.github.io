@@ -5,6 +5,7 @@ url: "https://lumiryx.github.io"
 
 markdown: kramdown
 permalink: pretty
+theme: jekyll-theme-so-simple
 
 collections:
   projects:
