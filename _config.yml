@@ -15,4 +15,4 @@ collections:
     permalink: /tools/:name/
   writeups:
     output: true
-    permailink: /writeups/:name/
+    permalink: /writeups/:name/
