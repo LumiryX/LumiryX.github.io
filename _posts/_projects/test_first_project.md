@@ -1,4 +1,7 @@
-# Test 0.1
+---
+layout: default
+title: Test
+---
 
 Crack the World! 
 
