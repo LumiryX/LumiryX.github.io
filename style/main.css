@@ -1,0 +1,175 @@
+/* ---------- THEME VARIABLES ---------- */
+
+:root{
+--bg:#121212;
+--surface:#1e1e1e;
+--text:white;
+--muted:#aaa;
+--border:#333;
+}
+
+body.light{
+--bg:#ffffff;
+--surface:#f2f2f2;
+--text:#111;
+--muted:#555;
+--border:#ddd;
+}
+
+/* ---------- GLOBAL ---------- */
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:var(--bg);
+color:var(--text);
+transition:0.25s;
+}
+
+/* ---------- HEADER ---------- */
+
+header{
+display:flex;
+justify-content:center;
+align-items:center;
+position:sticky;
+top:0;
+background:var(--bg);
+border-bottom:1px solid var(--border);
+padding:20px;
+z-index:10;
+}
+
+.header-controls{
+position:absolute;
+right:20px;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+background:var(--surface);
+color:var(--text);
+}
+
+/* ---------- MAIN LAYOUT ---------- */
+
+.layout{
+display:flex;
+justify-content:center;
+gap:30px;
+padding:30px 20px;
+}
+
+/* ---------- LEFT SIDEBAR ---------- */
+
+.sidebar-left{
+width:200px;
+background:var(--surface);
+padding:20px;
+border-radius:10px;
+height:fit-content;
+position:sticky;
+top:100px;
+}
+
+.sidebar-left a{
+display:block;
+text-decoration:none;
+color:var(--muted);
+margin:12px 0;
+}
+
+.sidebar-left a:hover{
+color:var(--text);
+}
+
+/* ---------- CENTER CONTENT ---------- */
+
+.main-content{
+flex:1;
+max-width:900px;   /* 🔥 zabrani infinite stretching */
+min-width:0;
+}
+
+/* ---------- RIGHT SOCIAL BOX ---------- */
+
+.sidebar-right{
+width:160px;
+position:sticky;
+top:120px;
+height:fit-content;
+}
+
+.social-box{
+background:var(--surface);
+padding:15px;
+border-radius:10px;
+}
+
+.social-box a{
+display:block;
+text-decoration:none;
+color:var(--muted);
+margin:8px 0;
+font-size:14px;
+}
+
+.social-box a:hover{
+color:var(--text);
+}
+
+/* ---------- FOOTER ---------- */
+
+footer{
+text-align:center;
+padding:25px;
+border-top:1px solid var(--border);
+margin-top:40px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media(max-width:1100px){
+
+.sidebar-right{
+display:none; /* social zmizne na tablet */
+}
+
+}
+
+@media(max-width:800px){
+
+.layout{
+flex-direction:column;
+align-items:center;
+}
+
+.sidebar-left{
+width:100%;
+position:relative;
+top:0;
+}
+
+.main-content{
+max-width:100%;
+}
+
+.sidebar-right{
+display:block;
+width:100%;
+}
+
+.social-box{
+display:flex;
+justify-content:center;
+gap:20px;
+}
+
+.social-box a{
+margin:0;
+}
+
+}
