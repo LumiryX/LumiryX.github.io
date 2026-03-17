@@ -13,3 +13,4 @@ sections.forEach(title => {
     section.classList.toggle('open');
   });
 });
+

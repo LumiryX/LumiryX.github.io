@@ -6,6 +6,11 @@
 --text:white;
 --muted:#aaa;
 --border:#333;
+
+--link:#99b6f9;
+--link-hover:#a8c1ff;
+--link-visited:#b48cff;
+
 }
 
 body.light{
@@ -14,6 +19,11 @@ body.light{
 --text:#111;
 --muted:#555;
 --border:#ddd;
+
+--link:#2b6cff;
+--link-hover:#678ef1;
+--link-visited:#7a3bd1;
+
 }
 
 /* ---------- GLOBAL ---------- */
@@ -164,6 +174,7 @@ top:0;
 
 .main-content{
 max-width:100%;
+min-width:0;
 }
 
 .sidebar-right{
@@ -183,6 +194,10 @@ margin:0;
 
 }
 
+.section{
+  font-size: 24px;
+}
+
 /* -------------- */
 
 .section-content {
@@ -197,12 +212,101 @@ margin:0;
 
 .section-title {
   cursor: pointer;
-  font-size:16px;
+  font-size:20px;
 }
 
 .section{
-    padding-top: 7px;
+  padding-top: 7px;
 }
+
 .extra-padding{
     padding-top: 10px;
+}
+
+.section-content .section {
+  margin-left: 10px;
+  border-left: 1px solid var(--border);
+  padding-left: 10px;
+}
+
+.main-content pre {
+  overflow-x: auto;
+  max-width: 100%;
+  background: var(--surface);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.main-content code {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.main-content pre span {
+  all: unset;
+}
+
+.main-content h1,
+.main-content h2,
+.main-content h3 {
+  margin-top: 30px;
+}
+
+.main-content p {
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.main-content ul,
+.main-content ol {
+  padding-left: 25px;
+}
+
+.main-content p code {
+  background: var(--surface);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+a{
+  color: var(--link);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover{
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+a:visited{
+  color: var(--link-visited);
+}
+
+.sidebar-left a{
+  color: var(--muted);
+}
+
+.sidebar-left a:hover{
+  color: var(--link);
+}
+
+.main-content a{
+  position: relative;
+}
+
+.main-content a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-2px;
+  width:0%;
+  height:1px;
+  background:var(--link);
+  transition:0.25s;
+}
+
+.main-content a:hover::after{
+  width:100%;
 }
