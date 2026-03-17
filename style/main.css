@@ -310,3 +310,15 @@ a:visited{
 .main-content a:hover::after{
   width:100%;
 }
+
+.screenshot {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.screenshot img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
