@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LumiryX - Hunter</title>
+<link rel="stylesheet" href="/style/main.css">
+</head>
+
+<body>
+<header>
+<div class="favicon">
+    <a href="/index.html"><img src="/img/favicon.ico" alt="Imagine" target="_blank"></a>
+</div>
+<h1 class="page-title">LumiryX - Hunter</h1>
+<div class="header-controls">
+<button onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+<div class="layout">
+<!-- LEFT SIDEBAR -->
+<aside class="sidebar-left">
+<h2>Content</h2>
+<hr>
+<div class="extra-padding">
+<div class="section">
+  <div class="section-title">Tools</div>
+    <div class="section-content">
+        <a href="#">GuessSmarter</a>
+        </div>
+    </div>
+<div class="section">
+  <div class="section-title">Projects</div>
+    <div class="section-content">
+        <a href="#">NAS server</a>
+        </div>
+    </div>
+<div class="section">
+  <div class="section-title">Writeups</div>
+      <div class="section-content">
+        <div class="section">
+            <div class="section-title">TryHackMe</div>
+                <div class="section-content">
+                    <a href="/content/Writeups/TryHackMe/Brooklyn99.html" target="_blank">Brooklyn99</a>
+                    <a href="/content/Writeups/TryHackMe/Poster.html" target="_blank">Poster</a>
+                </div>
+            </div>
+                <div class="section">
+            <div class="section-title">HackSmarter</div>
+                <div class="section-content">
+                    <a href="/content/Writeups/HackSmarter/Ascension.html">Ascension</a>
+                    <a href="/content/Writeups/HackSmarter/SilverPlatter.html">SilverPlatter</a>
+                    <a href="/content/Writeups/HackSmarter/BankSmarter.html">BankSmarter</a>
+                    <a href="content/Writeups/HackSmarter/Hunter.html">Hunter</a>
+                </div>
+            </div>
+    </div>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+<p>This CTF challenge is from <a href="https://www.hacksmarter.org">HackSmarter Webpage</a></p>
+<h1 id="mission-scenario">Mission Scenario</h1>
+<p>You are an operator for the <strong>Hack Smarter Red Team</strong>, currently conducting a black-box assessment on a client&#39;s external login portal. As part of the initial reconnaissance phase, our OSINT analysts have compiled a list of potential usernames.</p>
+<p>You need to identify which one is a valid username for the web application.</p>
+<h2 id="have-to-obtain-">Have to Obtain:</h2>
+<ul>
+<li>valid Username</li>
+</ul>
+<h1 id="setup">Setup</h1>
+<pre><code>10<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.25</span><span class="hljs-selector-class">.252</span>     <span class="hljs-selector-tag">hunter</span><span class="hljs-selector-class">.hsm</span>
+</code></pre><h1 id="enumeration">Enumeration</h1>
+<h2 id="nmap">Nmap</h2>
+<p>TCP</p>
+<pre><code><span class="hljs-selector-tag">PORT</span>   <span class="hljs-selector-tag">STATE</span> <span class="hljs-selector-tag">SERVICE</span> <span class="hljs-selector-tag">VERSION</span>
+<span class="hljs-selector-tag">22</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">ssh</span>     <span class="hljs-selector-tag">OpenSSH</span> <span class="hljs-selector-tag">8</span><span class="hljs-selector-class">.9p1</span> <span class="hljs-selector-tag">Ubuntu</span> <span class="hljs-selector-tag">3ubuntu0</span><span class="hljs-selector-class">.13</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
+| <span class="hljs-selector-tag">ssh-hostkey</span>: 
+|   <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">de</span><span class="hljs-selector-pseudo">:9a</span><span class="hljs-selector-pseudo">:8d</span><span class="hljs-selector-pseudo">:4a</span><span class="hljs-selector-pseudo">:12</span><span class="hljs-selector-pseudo">:19</span><span class="hljs-selector-pseudo">:63</span><span class="hljs-selector-pseudo">:c0</span><span class="hljs-selector-pseudo">:5f</span><span class="hljs-selector-pseudo">:a9</span><span class="hljs-selector-pseudo">:2c</span><span class="hljs-selector-pseudo">:88</span><span class="hljs-selector-pseudo">:c1</span><span class="hljs-selector-pseudo">:5e</span><span class="hljs-selector-pseudo">:15</span><span class="hljs-selector-pseudo">:2f</span> (ECDSA)
+|<span class="hljs-selector-tag">_</span>  <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">15</span><span class="hljs-selector-pseudo">:23</span><span class="hljs-selector-pseudo">:e9</span><span class="hljs-selector-pseudo">:d8</span><span class="hljs-selector-pseudo">:ea</span><span class="hljs-selector-pseudo">:a9</span><span class="hljs-selector-pseudo">:9c</span><span class="hljs-selector-pseudo">:7f</span><span class="hljs-selector-pseudo">:f9</span><span class="hljs-selector-pseudo">:21</span><span class="hljs-selector-pseudo">:f8</span><span class="hljs-selector-pseudo">:67</span><span class="hljs-selector-pseudo">:67</span><span class="hljs-selector-pseudo">:16</span><span class="hljs-selector-pseudo">:c8</span><span class="hljs-selector-pseudo">:cb</span> (ED25519)
+<span class="hljs-selector-tag">80</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">http</span>    <span class="hljs-selector-tag">Werkzeug</span> <span class="hljs-selector-tag">httpd</span> <span class="hljs-selector-tag">3</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-class">.4</span> (Python <span class="hljs-number">3.10</span>.<span class="hljs-number">12</span>)
+|<span class="hljs-selector-tag">_http-title</span>: <span class="hljs-selector-tag">HackSmarter</span> <span class="hljs-selector-tag">Portal</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">Login</span>
+|<span class="hljs-selector-tag">_http-server-header</span>: <span class="hljs-selector-tag">Werkzeug</span>/<span class="hljs-selector-tag">3</span><span class="hljs-selector-class">.1</span><span class="hljs-selector-class">.4</span> <span class="hljs-selector-tag">Python</span>/<span class="hljs-selector-tag">3</span><span class="hljs-selector-class">.10</span><span class="hljs-selector-class">.12</span>
+<span class="hljs-selector-tag">Service</span> <span class="hljs-selector-tag">Info</span>: <span class="hljs-selector-tag">OS</span>: <span class="hljs-selector-tag">Linux</span>; <span class="hljs-selector-tag">CPE</span>: <span class="hljs-selector-tag">cpe</span>:/<span class="hljs-selector-tag">o</span><span class="hljs-selector-pseudo">:linux</span><span class="hljs-selector-pseudo">:linux_kernel</span>
+</code></pre><p>UDP</p>
+<pre><code><span class="hljs-attribute">Nothing</span>
+</code></pre><h2 id="ssh-22-">SSH(22)</h2>
+<pre><code>ssh root@hunter.hsm
+The authenticity <span class="hljs-keyword">of</span> host <span class="hljs-comment">'hunter.hsm (10.0.25.252)' can't be established.</span>
+ED25519 <span class="hljs-keyword">key</span> fingerprint <span class="hljs-keyword">is</span>: SHA256:E1yUr3IjsmnxLG5adytD66Tz2W1F04t9vstN0wlvllk
+This <span class="hljs-keyword">key</span> <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> known <span class="hljs-keyword">by</span> any other names.
+Are you sure you want <span class="hljs-keyword">to</span> <span class="hljs-keyword">continue</span> connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added <span class="hljs-comment">'hunter.hsm' (ED25519) to the list of known hosts.</span>
+root@hunter.hsm: Permission denied (publickey).
+</code></pre><p>SSH is securely set-up
+We are not able to bruteforce password</p>
+<h2 id="http-80-">HTTP(80)</h2>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Sign in.png"></div></p>
+<p>On this page <code>/reset</code> we can do bruteforce attack to obtain valid username. Since the request should take more time if the username is valid.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/reset page.png"></div></p>
+<h1 id="vulnerability-assessment">Vulnerability Assessment</h1>
+<h2 id="webapp">WebApp</h2>
+<p>We gonna run Caido. On caido we dont have rate limiting for bruteforce attacks. But you are free to use Burp Suite if you like it more.</p>
+<p>Firstly we have to upload our username wordlist into caido
+<p>If you are using Kali Linux you have deafaulted installed wordlists.
+This wordlist you can find inside <code>/usr/share/wordlists/wfuzz/others/names.txt</code></p>
+<p>Otherwise you can use copy of this directory on this github repo: <a href="https://github.com/00xZEROx00/kali-wordlists/tree/master/wfuzz/others">Wordlist</a></p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/usernames file upload.png"></div></p>
+<p>Then go to password reset. And sent the history request to automate.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Setting up caido.png"></div></p>
+<p>In the settings set up <code># of workers to 5</code>. We dont want to overload the WebApp, because then we are risking we gonna get false positive or even skip it.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Number of workers.png"></div></p>
+<p>Now when we set up our attack payload we are free to run it and start bruteforcing valid username.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Blured Username answer.png"></div></p>
+<p>The username <code>jo**</code> took more time so this should be the valid username. And it is a valid username.</p>
+<h1 id="note-">Note:</h1>
+<p>Big shout-out to Tyler Ramsbey who builded HackSmarter and also maked this room.</p>
+<p>Ps: If you get stuck try to find a solution by yourself. It gonna improve your skill rapidly. Even when it takes lot of time it is worth to struggle.</p>
+
+
+</main>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="sidebar-right">
+<div class="social-box">
+<h4>Social</h4>
+<a href="https://github.com/LumiryX" target="_blank">GitHub</a>
+<a href="https://discordapp.com/users/340045438990286850" target="_blank">Discord</a>
+<a href="https://www.youtube.com/@LumiryX-SecureShield" target="_blank">YouTube</a>
+</div>
+</aside>
+</div>
+<footer>
+
+© 2026 LumiryX 
+
+</footer>
+<script src="/js/script.js"></script>
+
+</body>
+</html>
