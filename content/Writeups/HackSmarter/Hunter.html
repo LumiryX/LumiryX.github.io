@@ -61,11 +61,11 @@
 <!-- MAIN CONTENT -->
 <main class="main-content">
 
-<p>This CTF challenge is from <a href="https://www.hacksmarter.org">HackSmarter Webpage</a></p>
+<p>This CTF challenge is from <a href="https://www.hacksmarter.org">HackSmarter Platform</a></p>
 <h1 id="mission-scenario">Mission Scenario</h1>
 <p>You are an operator for the <strong>Hack Smarter Red Team</strong>, currently conducting a black-box assessment on a client&#39;s external login portal. As part of the initial reconnaissance phase, our OSINT analysts have compiled a list of potential usernames.</p>
 <p>You need to identify which one is a valid username for the web application.</p>
-<h2 id="have-to-obtain-">Have to Obtain:</h2>
+<h2 id="have-to-obtain-">Objective:</h2>
 <ul>
 <li>valid Username</li>
 </ul>
@@ -94,29 +94,30 @@ This <span class="hljs-keyword">key</span> <span class="hljs-keyword">is</span> 
 Are you sure you want <span class="hljs-keyword">to</span> <span class="hljs-keyword">continue</span> connecting (yes/no/[fingerprint])? yes
 Warning: Permanently added <span class="hljs-comment">'hunter.hsm' (ED25519) to the list of known hosts.</span>
 root@hunter.hsm: Permission denied (publickey).
-</code></pre><p>SSH is securely set-up
-We are not able to bruteforce password</p>
+</code></pre><p>SSH is securely configured.
+Password brute-forcing is not possible</p>
 <h2 id="http-80-">HTTP(80)</h2>
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Sign in.png"></div></p>
 <p>On this page <code>/reset</code> we can do bruteforce attack to obtain valid username. Since the request should take more time if the username is valid.
+The application responds slower when a valid username occur because additional backend validation is performed.
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/reset page.png"></div></p>
 <h1 id="vulnerability-assessment">Vulnerability Assessment</h1>
 <h2 id="webapp">WebApp</h2>
-<p>We gonna run Caido. On caido we dont have rate limiting for bruteforce attacks. But you are free to use Burp Suite if you like it more.</p>
-<p>Firstly we have to upload our username wordlist into caido
+<p>We will use Caido. On caido we dont have rate limiting for bruteforce attacks. But you are free to use Burp Suite if you like it more.</p>
+<p>First, upload the username wordlist into Caido.
 <p>If you are using Kali Linux you have deafaulted installed wordlists.
 This wordlist you can find inside <code>/usr/share/wordlists/wfuzz/others/names.txt</code></p>
 <p>Otherwise you can use copy of this directory on this github repo: <a href="https://github.com/00xZEROx00/kali-wordlists/tree/master/wfuzz/others">Wordlist</a></p>
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/usernames file upload.png"></div></p>
-<p>Then go to password reset. And sent the history request to automate.</p>
+<p>Then go to password reset. And sent the request to the automation module.</p>
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Setting up caido.png"></div></p>
-<p>In the settings set up <code># of workers to 5</code>. We dont want to overload the WebApp, because then we are risking we gonna get false positive or even skip it.</p>
+<p>In the settings set up <code># of workers to 5</code>. We dont want to overload the WebApp, because then we risk we getting false positives or even skip it.</p>
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Number of workers.png"></div></p>
 <p>Now when we set up our attack payload we are free to run it and start bruteforcing valid username.</p>
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Hunter/Blured Username answer.png"></div></p>
-<p>The username <code>jo**</code> took more time so this should be the valid username. And it is a valid username.</p>
+<p>The username <code>jo**</code> produced a longer response time, indicating that it is a valid username. And it is a valid username.</p>
 <h1 id="note-">Note:</h1>
-<p>Big shout-out to Tyler Ramsbey who builded HackSmarter and also maked this room.</p>
+<p>Big shout-out to Tyler Ramsbey who built HackSmarter and created this room.</p>
 <p>PS: If you get stuck, try to find a solution by yourself. It will improve your skills rapidly. Even if it takes a lot of time, the struggle is worth it.</p>
 
 
