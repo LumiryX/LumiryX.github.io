@@ -145,7 +145,7 @@ jake@brooklyn.thm<span class="hljs-symbol">'s</span> password:
 <p>The webpage appears mostly empty and only displays an image. However, inspecting the page source reveals a comment mentioning steganography.</p>
 <div class="screenshot"><img src="/img/Brooklyn99/Pasted image 20260310121103.png"></div>
 <pre><code>&lt;-- Have you ever heard <span class="hljs-keyword">of</span> steganography? --&gt;
-</code></pre><p>This suggests hidden data inside media files, although in this case it turns out to be a rabbit hole and not required for solving the challenge. <a href="https://www.okta.com/identity-101/steganography/">Read more about Steganography</a> </p>
+</code></pre><p>This suggests hidden data inside media files, although in this case it turns out to be a rabbit hole and not required for solving the challenge. <a href="https://www.okta.com/identity-101/steganography/" target="_blank">Read more about Steganography</a> </p>
 <p>Even so, understanding steganography is useful knowledge for future CTF challenges.</p>
 <h2 id="exploitation">Exploitation</h2>
 <p>Based on the message found in <code>note_to_jake.txt</code>, Jake is using a weak password. This makes a brute-force attack a reasonable next step.</p>
@@ -177,7 +177,7 @@ Matching Defaults entries <span class="hljs-keyword">for</span> jake on <span cl
 User jake may run the following commands on <span class="hljs-symbol">brookly_nine_nine:</span>
     (ALL) <span class="hljs-symbol">NOPASSWD:</span> /usr/bin/less
 </code></pre><p>We are allowed to run <code>/usr/bin/less</code> with sudo privileges.</p>
-<p>There are different options how to gain root as shell from there, but I like to use <a href="https://gtfobins.org/#">GTFObins</a>
+<p>There are different options how to gain root as shell from there, but I like to use <a href="https://gtfobins.org/#" target="_blank">GTFObins</a>
 <div class="screenshot"><img src="/img/Brooklyn99/Screenshot 2026-03-10 at 14.33.56.jpg"></div></p>
 <p>We execute the following command: <code>sudo less /etc/profile</code>
 <code>&gt; jake@brookly_nine_nine:/home/holt$ sudo less /etc/profile</code></p>
@@ -185,7 +185,7 @@ User jake may run the following commands on <span class="hljs-symbol">brookly_ni
 You should now see the # symbol, which indicates that we have obtained root privileges. You can also confirm this by running the <code>whoami</code> command.</p>
 <pre><code>root<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-comment"># whoami</span>
 root
-</code></pre><p>There are also other possible techniques. For example, you could copy <code>/etc/passwd</code> and <code>/etc/shadow</code>, extract the password hashes <a href="https://attack.mitre.org/techniques/T1003/008/">ReadMore</a>, and attempt to crack them. A useful online tool for this is <a href="https://crackstation.net/">crackstation</a>. After cracking the hash, you could log in as root over SSH using the recovered password.</p>
+</code></pre><p>There are also other possible techniques. For example, you could copy <code>/etc/passwd</code> and <code>/etc/shadow</code>, extract the password hashes <a href="https://attack.mitre.org/techniques/T1003/008/" target="_blank">ReadMore</a>, and attempt to crack them. A useful online tool for this is <a href="https://crackstation.net/" target="_blank">crackstation</a>. After cracking the hash, you could log in as root over SSH using the recovered password.</p>
 <h2 id="root-flag">Root Flag</h2>
 <pre><code>root<span class="hljs-variable">@brookly_nine_nine</span><span class="hljs-symbol">:/home/holt</span><span class="hljs-comment"># cat /root/root.txt</span>
 -- Creator : Fsociety2006 --
