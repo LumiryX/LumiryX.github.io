@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LumiryX - SilverPlatter</title>
+<link rel="stylesheet" href="/style/main.css">
+</head>
+
+<body>
+<header>
+<div class="favicon">
+    <a href="/index.html"><img src="/img/favicon.ico" alt="Imagine" target="_blank"></a>
+</div>
+<h1 class="page-title">LumiryX - SilverPlatter</h1>
+<div class="header-controls">
+<button onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+<div class="layout">
+
+
+<aside class="sidebar-left" id="sidebar"></aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+<p>This CTF challenge is from  the <a href="https://tryhackme.com/room/silverplatter" target="_blank">TryHackMe</a>.</p>
+<h1 id="mission-scenario">Mission Scenario</h1>
+<p>Think you&#39;ve got what it takes to outsmart the Hack Smarter Security team? They claim to be unbeatable, and now it&#39;s your chance to prove them wrong. Dive into their web server, find the hidden flags, and show the world your elite hacking skills. Good luck, and may the best hacker win!  </p>
+<p>But beware, this won&#39;t be a walk in the digital park. Hack Smarter Security has fortified the server against common attacks and their password policy requires passwords that have not been breached (they check it against the rockyou.txt wordlist - that&#39;s how &#39;cool&#39; they are). The hacking gauntlet has been thrown, and it&#39;s time to elevate your game. Remember, only the most ingenious will rise to the top. </p>
+<p>May your code be swift, your exploits flawless, and victory yours!</p>
+<h2 id="have-to-obtain-">Have to obtain:</h2>
+<ul>
+<li>User Flag</li>
+<li>Root Flag</li>
+</ul>
+<h1 id="setup">Setup</h1>
+<p>Add target IP to <code>/etc/hosts</code> for easier enumeration</p>
+<pre><code>10<span class="hljs-selector-class">.80</span><span class="hljs-selector-class">.150</span><span class="hljs-selector-class">.161</span>   <span class="hljs-selector-tag">silverplatter</span><span class="hljs-selector-class">.thm</span>
+</code></pre><h1 id="enumeration">Enumeration</h1>
+<h2 id="nmap">Nmap</h2>
+<p>TCP</p>
+<pre><code>&gt; sudo nmap -sC -sV -p- silverplatter.thm -T5
+
+PORT     STATE SERVICE    VERSION
+<span class="hljs-number">22</span>/tcp   open  ssh        OpenSSH <span class="hljs-number">8.9</span>p1 Ubuntu <span class="hljs-number">3</span>ubuntu0<span class="hljs-number">.4</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
+| <span class="hljs-type">ssh</span>-hostkey: 
+|   <span class="hljs-type">256</span> cb:<span class="hljs-number">7</span>d:cd:<span class="hljs-number">66</span>:d1:<span class="hljs-number">1</span>d:<span class="hljs-number">7</span>d:<span class="hljs-number">6</span>d:<span class="hljs-number">6</span>c:e3:a0:<span class="hljs-number">50</span>:e8:<span class="hljs-number">78</span>:<span class="hljs-number">34</span>:f5 (ECDSA)
+|<span class="hljs-type">_</span>  <span class="hljs-number">256</span> <span class="hljs-number">60</span>:<span class="hljs-number">5</span>f:<span class="hljs-number">2</span>d:<span class="hljs-number">59</span>:cb:a0:<span class="hljs-number">1</span>b:<span class="hljs-number">0</span>e:ca:f6:cf:<span class="hljs-number">42</span>:eb:<span class="hljs-number">6</span>b:fa:<span class="hljs-number">35</span> (ED25519)
+<span class="hljs-number">80</span>/tcp   open  http       nginx <span class="hljs-number">1.18</span><span class="hljs-number">.0</span> (Ubuntu)
+|<span class="hljs-type">_http</span>-server-header: nginx/<span class="hljs-number">1.18</span><span class="hljs-number">.0</span> (Ubuntu)
+|<span class="hljs-type">_http</span>-title: Hack Smarter Security
+<span class="hljs-number">8080</span>/tcp open  http-proxy
+|<span class="hljs-type">_http</span>-title: Error
+| <span class="hljs-type">fingerprint</span>-strings: 
+|   <span class="hljs-type">FourOhFourRequest</span>, GetRequest, HTTPOptions: 
+|     <span class="hljs-type">HTTP</span>/<span class="hljs-number">1.1</span> <span class="hljs-number">404</span> Not Found
+|     <span class="hljs-type">Connection</span>: close
+|     <span class="hljs-type">Content</span>-Length: <span class="hljs-number">74</span>
+|     <span class="hljs-type">Content</span>-<span class="hljs-keyword">Type</span>: text/html
+|     <span class="hljs-type">Date</span>: Tue, <span class="hljs-number">24</span> Mar <span class="hljs-number">2026</span> <span class="hljs-number">15</span>:<span class="hljs-number">22</span>:<span class="hljs-number">05</span> GMT
+|     <span class="hljs-type">&lt;html</span>&gt;&lt;head&gt;&lt;title&gt;Error&lt;/title&gt;&lt;/head&gt;&lt;body&gt;<span class="hljs-number">404</span> - Not Found&lt;/body&gt;&lt;/html&gt;
+|   <span class="hljs-type">GenericLines</span>, Help, Kerberos, LDAPSearchReq, LPDString, RTSPRequest, SMBProgNeg, SSLSessionReq, Socks5, TLSSessionReq, TerminalServerCookie: 
+|     <span class="hljs-type">HTTP</span>/<span class="hljs-number">1.1</span> <span class="hljs-number">400</span> Bad Request
+|     <span class="hljs-type">Content</span>-Length: <span class="hljs-number">0</span>
+|<span class="hljs-type">_</span>    Connection: close
+</code></pre><p>UDP</p>
+<pre><code>&gt; sudo nmap <span class="hljs-_">-s</span>U <span class="hljs-_">-s</span>V --top-ports 100 silverplatter.thm -T5
+
+Top 100 are closed
+</code></pre><ul>
+<li>Open TCP ports: 22, 80, 8080</li>
+<li>On port 80 is running nginx 1.18.0</li>
+</ul>
+<h2 id="ssh-22-">SSH (22)</h2>
+<pre><code>&gt; ssh root@silverplatter.thm
+The authenticity <span class="hljs-keyword">of</span> host <span class="hljs-comment">'silverplatter.thm (10.80.150.161)' can't be established.</span>
+ED25519 <span class="hljs-keyword">key</span> fingerprint <span class="hljs-keyword">is</span>: SHA256:n3E6mLNd2t/TVCCO/iIgA4WZ1YLYapYzD4TkhS4DI0U
+This <span class="hljs-keyword">key</span> <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> known <span class="hljs-keyword">by</span> any other names.
+Are you sure you want <span class="hljs-keyword">to</span> <span class="hljs-keyword">continue</span> connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added <span class="hljs-comment">'silverplatter.thm' (ED25519) to the list of known hosts.</span>
+root@silverplatter.thm<span class="hljs-comment">'s password:</span>
+</code></pre><p>SSH is open for password login, potentially can lead to bruteforce attack.</p>
+<h2 id="http-80-">HTTP (80)</h2>
+<p>nginx 1.18.0 -&gt; This version does not have any publicly known vulnerabilities.</p>
+<h3 id="user-website-view-">User Website View:</h3>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Main Page.png"></div>
+<ul>
+<li>There is no default login page. </li>
+<li>Inside CONTACT we see the project manager on Silverpeas is <code>scr1ptkiddy</code>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Contact Directory.png"></div>
+</li>
+</ul>
+<p>After reviewing all parts of the website from a user perspective, we are ready to run directory scan and v-host scan to discover some secret directories.</p>
+<h2 id="http-8080-">HTTP (8080)</h2>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/8080 not found.png"></div>
+<p>We should perform directory enumeration using dirsearch.</p>
+<h1 id="vulnerability-assessment">Vulnerability Assessment</h1>
+<h2 id="http-80-">HTTP (80)</h2>
+<h3 id="dirsearch">DirSearch</h3>
+<pre><code>&gt; dirsearch -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>dirb<span class="hljs-regexp">/big.txt -u http:/</span>/silverplatter.<span class="hljs-string">thm:</span><span class="hljs-number">80</span>
+
+[<span class="hljs-number">10</span>:<span class="hljs-number">39</span>:<span class="hljs-number">34</span>] <span class="hljs-number">301</span> -  <span class="hljs-number">178</span>B  - <span class="hljs-regexp">/assets  -&gt;  http:/</span><span class="hljs-regexp">/silverplatter.thm/</span>assets/     
+[<span class="hljs-number">10</span>:<span class="hljs-number">39</span>:<span class="hljs-number">49</span>] <span class="hljs-number">301</span> -  <span class="hljs-number">178</span>B  - <span class="hljs-regexp">/images  -&gt;  http:/</span><span class="hljs-regexp">/silverplatter.thm/</span>images/
+</code></pre><h3 id="ffuf">FFUF</h3>
+<pre><code>&gt; ffuf -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>dirb<span class="hljs-regexp">/big.txt -u http:/</span>/silverplatter.thm -H <span class="hljs-string">"Host:FUZZ.silverplatter.thm"</span> -fw <span class="hljs-number">926</span>
+
+Nothing
+</code></pre>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/assets.png"></div>
+<ul>
+<li><code>/assets</code> and <code>/images</code> are not accessible</li>
+</ul>
+<h2 id="http-8080-">HTTP (8080)</h2>
+<h3 id="dirsearch">DirSearch</h3>
+<pre><code>&gt; dirsearch -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>dirb<span class="hljs-regexp">/big.txt -u http:/</span>/silverplatter.<span class="hljs-string">thm:</span><span class="hljs-number">8080</span>
+
+[<span class="hljs-number">10</span>:<span class="hljs-number">44</span>:<span class="hljs-number">55</span>] <span class="hljs-number">302</span> -    <span class="hljs-number">0</span>B  - <span class="hljs-regexp">/console  -&gt;  /</span>noredirect.html                    
+[<span class="hljs-number">10</span>:<span class="hljs-number">45</span>:<span class="hljs-number">30</span>] <span class="hljs-number">302</span> -    <span class="hljs-number">0</span>B  - <span class="hljs-regexp">/website  -&gt;  http:/</span><span class="hljs-regexp">/silverplatter.thm:8080/</span>website/
+</code></pre><p>Nothing. </p>
+<h3 id="ffuf">FFUF</h3>
+<pre><code>ffuf -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>dirb<span class="hljs-regexp">/big.txt -u http:/</span>/silverplatter.<span class="hljs-string">thm:</span><span class="hljs-number">8080</span> -H <span class="hljs-string">"Host:FUZZ.silverplatter.thm"</span> -fw <span class="hljs-number">926</span>
+</code></pre><p>Nothing.</p>
+<p>But as they told us we already know the Directory. 
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Contact directory marked.png"></div>
+<ul>
+<li>Silverpeas directory on port 80 doesnt exist.</li>
+<li>On port 8080 we have login page:
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Silverpeas Login.png"></div>
+</li>
+</ul>
+<p>Since we know the username: <code>scr1ptkiddy</code> we should be able to brute-force the password. 
+I gonna use <code>rockyou.txt</code> wordlist as the fast test if we are able to bruteforce it. Since the rockyou is the most common wordlist for CTF challenges.</p>
+<h1 id="exploitation">Exploitation</h1>
+<h3 id="caido">Caido</h3>
+<p>Caido is pretty much same app as Burp Suite but Caido dont have rate limit for bruteforce attack.
+I will use Caido to save some time. Learn more about caido: <a href="https://caido.io/" target="_blank">https://caido.io/</a></p>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Caido RockYou.png"></div>
+<p>Once everything is set up, we hit the Run button to see whether any password stands out.</p>
+<p>We had no success using <code>rockyou.txt</code>
+Lets try another trick. Let&#39;s scrape the website and extract all words into a custom wordlist, which we use for bruteforcing password.</p>
+<p>For this purpose we can use <code>cewl</code> tool. You can read more about this here: <a href="https://github.com/digininja/CeWL" target="_blank">https://github.com/digininja/CeWL</a></p>
+<h4 id="cewl">Cewl</h4>
+<p>You can download this tool here: <a href="https://github.com/digininja/CeWL/releases/tag/5.2" target="_blank">https://github.com/digininja/CeWL/releases/tag/5.2</a>
+Then run this command to unzip file:
+<code>unzip CeWL-5.2.zip</code></p>
+<p>When we have unzipped file move into ceWL directory and run this command:</p>
+<pre><code>cewl <span class="hljs-string">http:</span><span class="hljs-comment">//silverplatter.thm &gt; custom_password.txt</span>
+</code></pre><p>This command will scrape the website and add the words into <code>custom_password.txt</code> file.</p>
+<p>Then use this file as earlier to bruteforce password for name <code>scr1ptkiddy</code>.</p>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Caido Custom.png"></div>
+<p>Now as we can see one word took much longer time then others and is longer then others.
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Caido valid password.png"></div>
+Which telling us this can be valid password. </p>
+<h2 id="http-8080-">HTTP (8080)</h2>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/silverpeas website.png"></div>
+<p>On this webpage we have an unread message. When we open we can see in the URL there is ID for the message. Which suggests IDOR vulnerability. Since we have just one message and we have ID=5 which telling us this is a global parameter using for all users on this website.
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/IDOR.png"></div>
+</p>
+<p>When we change the <code>ID=6</code> we get a SSH credentials for <code>tim</code> user.
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/IDOR Password.png"></div>
+</p>
+<h2 id="ssh-22-">SSH (22)</h2>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/tim log in.png"></div>
+<p>These credentials are valid. We are now logged in as the <code>tim</code> user. 
+Inside <code>/home/tim</code> directory we found <code>/user.txt</code> file. Which is our flag!</p>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/User Flag.png"></div>
+<h1 id="privilege-escalation">Privilege Escalation</h1>
+<p>Since we have <code>tim</code> password we can check which commands we are allowed to run with sudo privileges.</p>
+<pre><code>tim@ip<span class="hljs-string">-10</span><span class="hljs-string">-80</span><span class="hljs-string">-150</span><span class="hljs-string">-161</span>:~$ sudo -l
+[sudo] password for tim: 
+Sorry, user tim may not run sudo on ip<span class="hljs-string">-10</span><span class="hljs-string">-80</span><span class="hljs-string">-150</span><span class="hljs-string">-161</span>.
+</code></pre><p>But we have no luck with it.</p>
+<p>After checking <code>/etc/passwd</code>. We know our root user is Tyler.
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/id tyler.png"></div>
+</p>
+<p>We are in the <code>adm</code> group. </p>
+<pre><code>tim<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">80</span>-<span class="hljs-number">150</span>-<span class="hljs-number">161</span><span class="hljs-symbol">:/home</span><span class="hljs-variable">$ </span>id
+uid=<span class="hljs-number">1001</span>(tim) gid=<span class="hljs-number">1001</span>(tim) groups=<span class="hljs-number">1001</span>(tim),<span class="hljs-number">4</span>(adm)
+</code></pre><p>This suggests the following: <div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Adm Group.png"></div>
+</p>
+<p>We can do a small trick and check all the files if it doesn&#39;t includes password. Move into <code>/var/log</code> directory.</p>
+<p><code>&gt; grep -ir &quot;password&quot; | grep &quot;tyler&quot;</code></p>
+<p>We can spot the following line. This line telling us the POSTGRES_PASSWORD.
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Root password DB.png"></div>
+</p>
+<p>Also as we know the <code>Tyler</code> is a root user. </p>
+<p>Now we have 2 option to Privilege Escalation to the root. </p>
+<ol>
+<li>Manual</li>
+<li>Automatic</li>
+</ol>
+<p>I like to try few things before diving into Automatic methods. But if you dont want to you can use automatic tools, for example:</p>
+<p>One of the automatic options is <code>Linpeas</code>
+Linpeas is a script that will automatically check for many privilege escalation paths on Linux. It even has a color-coding system to quickly draw your attention to the most interesting paths.
+Here is a link for the <a href="https://www.hacksmarter.org/courses/60666c6f-dc11-4007-83cf-d059b8c7d32e/take/42-automated-privilege-escalation--getting-root#user-content-you-can-download-linpeas-locally-with-this-command" target="_blank">linpeas download</a></p>
+<p>One of things which I was trying was, use the name and password for log in via SSH. And it worked.</p>
+<pre><code>&gt; ssh tyler@silverplatter.thm
+tyler@silverplatter.thm<span class="hljs-symbol">'s</span> password: 
+Welcome <span class="hljs-keyword">to</span> Ubuntu <span class="hljs-number">22.04</span>.<span class="hljs-number">3</span> LTS (GNU/Linux <span class="hljs-number">5.15</span>.<span class="hljs-number">0</span>-<span class="hljs-number">91</span>-<span class="hljs-keyword">generic</span> x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as <span class="hljs-keyword">of</span> Tue Mar <span class="hljs-number">24</span> <span class="hljs-number">04</span>:<span class="hljs-number">47</span>:<span class="hljs-number">34</span> PM UTC <span class="hljs-number">2026</span>
+
+  System load:  <span class="hljs-number">0.0</span>                Processes:                <span class="hljs-number">129</span>
+  Usage <span class="hljs-keyword">of</span> /:   <span class="hljs-number">61.0</span>% <span class="hljs-keyword">of</span> <span class="hljs-number">12.94</span>GB   Users logged <span class="hljs-keyword">in</span>:          <span class="hljs-number">1</span>
+  Memory usage: <span class="hljs-number">58</span>%                IPv4 address <span class="hljs-keyword">for</span> docker0: <span class="hljs-number">172.17</span>.<span class="hljs-number">0.1</span>
+  Swap usage:   <span class="hljs-number">0</span>%                 IPv4 address <span class="hljs-keyword">for</span> ens5:    <span class="hljs-number">10.80</span>.<span class="hljs-number">150.161</span>
+
+ * Strictly confined Kubernetes makes edge <span class="hljs-keyword">and</span> IoT secure. Learn how MicroK8s
+   just raised the bar <span class="hljs-keyword">for</span> easy, resilient <span class="hljs-keyword">and</span> secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+
+Expanded Security Maintenance <span class="hljs-keyword">for</span> Applications <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> enabled.
+
+<span class="hljs-number">261</span> updates can be applied immediately.
+<span class="hljs-number">180</span> <span class="hljs-keyword">of</span> these updates are standard security updates.
+<span class="hljs-keyword">To</span> see these additional updates run: apt list <span class="hljs-comment">--upgradable</span>
+
+<span class="hljs-number">1</span> additional security update can be applied <span class="hljs-keyword">with</span> ESM Apps.
+Learn more about enabling ESM Apps service at https://ubuntu.com/esm
+
+
+The list <span class="hljs-keyword">of</span> available updates <span class="hljs-keyword">is</span> more than a week old.
+<span class="hljs-keyword">To</span> check <span class="hljs-keyword">for</span> <span class="hljs-keyword">new</span> updates run: sudo apt update
+Failed <span class="hljs-keyword">to</span> connect <span class="hljs-keyword">to</span> https://changelogs.ubuntu.com/meta-<span class="hljs-keyword">release</span>-lts. Check your Internet connection <span class="hljs-keyword">or</span> proxy settings
+
+
+Last login: Wed May  <span class="hljs-number">8</span> <span class="hljs-number">14</span>:<span class="hljs-number">00</span>:<span class="hljs-number">54</span> <span class="hljs-number">2024</span> from <span class="hljs-number">192.168</span>.<span class="hljs-number">1.20</span>
+tyler@ip-<span class="hljs-number">10</span>-<span class="hljs-number">80</span>-<span class="hljs-number">150</span>-<span class="hljs-number">161</span>:~$
+</code></pre><p>We need root privileges to access the <code>/root</code> directory. So type this command: <code>sudo su</code> then paste the <code>tyler</code> password and now we can move into the <code>root</code> directory and read the final flag.</p>
+<div class="screenshot"><img src="/content/Writeups/TryHackMe/img/SilverPlatter/Root Flag.png"></div>
+<h1 id="key-findings-">Key Findings:</h1>
+<pre><code>-<span class="ruby"> IDOR vulnerability leading to obtain valid credentials
+</span>-<span class="ruby"> Weak operational security, exposing credentials <span class="hljs-keyword">in</span> logs
+</span>-<span class="ruby"> Successfull privilege escalation via reused credentials</span>
+</code></pre><h2 id="attack-path-summary">Attack Path Summary</h2>
+<pre><code><span class="hljs-number">1.</span> Service enumeration revealed web application on port <span class="hljs-number">8080</span>
+<span class="hljs-number">2.</span> Username identified via OSINT from website
+<span class="hljs-number">3.</span> Password obtained through custom wordlist brute-force
+<span class="hljs-number">4.</span> IDOR vulnerability exposed SSH credentials
+<span class="hljs-number">5.</span> Log file analysis revealed privileged credentials
+<span class="hljs-number">6.</span> Credential reuse allowed root access
+</code></pre>
+
+</main>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="sidebar-right">
+<div class="social-box">
+<h4>Social</h4>
+<a href="https://github.com/LumiryX" target="_blank">GitHub</a>
+<a href="https://discordapp.com/users/340045438990286850" target="_blank">Discord</a>
+<a href="https://www.youtube.com/@LumiryX-SecureShield" target="_blank">YouTube</a>
+</div>
+</aside>
+</div>
+<footer>
+
+© 2026 LumiryX 
+
+</footer>
+<script src="/js/script.js"></script>
+
+</body>
+</html>
